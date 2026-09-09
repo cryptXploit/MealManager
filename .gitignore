@@ -1,0 +1,16 @@
+.env
+client/node_modules
+client/build
+server/node_modules
+server/build
+server/.env
+client/.env
+
+client/.env.local
+server/.env.local
+server/.env.development
+client/.env.development
+
+client/.env.production
+server/.env.production
+
