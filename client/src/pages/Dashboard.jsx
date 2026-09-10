@@ -97,6 +97,10 @@ const Dashboard = ({ profile, setProfile, messDetails, session }) => {
   }, [handleTouchStart, handleTouchMove, handleTouchEnd])
 
   // ----- Other effects (unchanged) -----
+  useEffect(() => { 
+    if (profile?.mess_id) fetchAllDataCallback();
+  }, [profile?.mess_id, fetchAllDataCallback])
+
   useEffect(() => { activeTabRef.current = activeTab }, [activeTab])
   useEffect(() => { profileRef.current = profile }, [profile])
   useEffect(() => { document.body.className = darkMode ? 'bg-slate-900 text-slate-100' : 'bg-slate-50 text-slate-800' }, [darkMode])
@@ -258,7 +262,11 @@ const Dashboard = ({ profile, setProfile, messDetails, session }) => {
     setMealInput(p => ({ ...p, count: '' }))
     logActivity('ADDED', `Self Add: ${countVal} (${mealInput.type}) for ${mealInput.date}`)
     if (isOnline) {
-      const { data } = await supabase.from('meals').insert([{ user_id: session.user.id, mess_id: profile.mess_id, date: mealInput.date, count: countVal, meal_type: mealInput.type }]).select().single()
+      const { data, error } = await supabase.from('meals').insert([{ user_id: session.user.id, mess_id: profile.mess_id, date: mealInput.date, count: countVal, meal_type: mealInput.type }]).select().single()
+      if (error) {
+        console.error("Insert meal error:", error);
+        showToast(`Failed to add meal: ${error.message}`, 'error');
+      }
       if (data) setMeals(prev => { const n = prev.map(m => m.id === tempId ? data : m); updateCache(CACHE_KEYS.MEALS, n); return n })
     }
   }
@@ -286,9 +294,15 @@ const Dashboard = ({ profile, setProfile, messDetails, session }) => {
     const msg = { id: tempId, user_id: session.user.id, mess_id: profile.mess_id, text: txt, created_at: new Date().toISOString() }
     setMessages(p => { const n = [...p, msg]; updateCache(CACHE_KEYS.MESSAGES, n); return n })
     if (isOnline) {
-      const { data } = await supabase.from('messages').insert([{ user_id: session.user.id, mess_id: profile.mess_id, text: txt }]).select().single()
-      if (data) { setMessages(prev => { const updated = prev.map(m => m.id === tempId ? data : m); updateCache(CACHE_KEYS.MESSAGES, updated); return updated }) }
-      else { setChatInput(txt); showToast('Failed to send', 'error') }
+      const { data, error } = await supabase.from('messages').insert([{ user_id: session.user.id, mess_id: profile.mess_id, text: txt }]).select().single()
+      if (error) {
+        console.error("Insert message error:", error);
+        showToast(`Failed to send: ${error.message}`, 'error');
+        setChatInput(txt); // restore input
+        setMessages(prev => prev.filter(m => m.id !== tempId)); // remove local temp message
+      } else if (data) { 
+        setMessages(prev => { const updated = prev.map(m => m.id === tempId ? data : m); updateCache(CACHE_KEYS.MESSAGES, updated); return updated }) 
+      }
     }
   }
 
