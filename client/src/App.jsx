@@ -25,45 +25,45 @@ function App() {
 
   const [updatePasswordMode, setUpdatePasswordMode] = useState(false)
 
-useEffect(() => {
-  const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-    if (event === 'PASSWORD_RECOVERY') {
-      setUpdatePasswordMode(true)
-      setUiState('auth') // or a dedicated update-password page
-    }
-  })
-  return () => subscription.unsubscribe()
-}, [])
-
   useEffect(() => {
     const init = async () => {
-      if (window.location.hash.includes('type=recovery')) {
-        setUpdatePasswordMode(true)
-      }
-      const { data: { session: s } } = await supabase.auth.getSession()
-      if (s) {
-        setSession(s)
-        await fetchProfileAndMess(s.user, s.access_token)
+      const isRecovery = window.location.hash.includes('type=recovery');
+      
+      const { data: { session: s } } = await supabase.auth.getSession();
+      
+      if (isRecovery && !s) {
+        alert("Reset link is expired or already used. Please request a new one.");
+        window.history.replaceState(null, null, ' ');
+        setUiState('auth');
+      } else if (isRecovery && s) {
+        setUpdatePasswordMode(true);
+        setSession(s);
+        window.history.replaceState(null, null, ' ');
+      } else if (s) {
+        setSession(s);
+        await fetchProfileAndMess(s.user, s.access_token);
       } else if (!profile) {
-        setUiState('auth')
+        setUiState('auth');
       }
-      setLoading(false)
+      setLoading(false);
     }
-    init()
+    init();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, s) => {
-      setSession(s)
-      if (event === 'SIGNED_OUT') {
-        localStorage.clear()
-        setProfile(null)
-        setMessDetails(null)
-        setUiState('auth')
-      } else if (event === 'SIGNED_IN' && s) {
-        await fetchProfileAndMess(s.user, s.access_token)
+      setSession(s);
+      if (event === 'PASSWORD_RECOVERY') {
+        setUpdatePasswordMode(true);
+      } else if (event === 'SIGNED_OUT') {
+        localStorage.clear();
+        setProfile(null);
+        setMessDetails(null);
+        setUiState('auth');
+      } else if (event === 'SIGNED_IN' && s && !updatePasswordMode) {
+        await fetchProfileAndMess(s.user, s.access_token);
       }
-    })
-    return () => subscription.unsubscribe()
-  }, [])
+    });
+    return () => subscription.unsubscribe();
+  }, []);
 
   const fetchProfileAndMess = async (user, overrideToken) => {
     const token = overrideToken || session?.access_token || localStorage.getItem('mm_token');
