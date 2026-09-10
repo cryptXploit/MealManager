@@ -440,7 +440,7 @@ const Dashboard = ({ profile, setProfile, messDetails, session }) => {
           <div className={`w-3 h-3 rounded-full mt-2.5 ${connStatus === 'connected' ? 'bg-green-500' : connStatus === 'connecting' ? 'bg-yellow-500 animate-pulse' : 'bg-red-500'}`} title={`Status: ${connStatus}`}></div>
           <button onClick={() => setDarkMode(!darkMode)} className={`w-8 h-8 rounded-full flex items-center justify-center transition ${darkMode ? 'bg-slate-800 text-yellow-400' : 'bg-slate-100 text-slate-600'}`}><i className={`fa-solid ${darkMode ? 'fa-sun' : 'fa-moon'}`}></i></button>
           <button onClick={() => setShowSettings(true)} className={`w-8 h-8 rounded-full flex items-center justify-center transition ${darkMode ? 'bg-slate-800 text-indigo-400' : 'bg-indigo-50 text-indigo-600'}`}><i className="fa-solid fa-gear"></i></button>
-          <button onClick={() => { setConfirmModal({ message: 'Log out?', onConfirm: async () => { try { await supabase.auth.signOut() } catch(e){} localStorage.clear(); setProfile(null); setConfirmModal(null); window.location.reload() } }) }} className={`w-8 h-8 rounded-full flex items-center justify-center transition ${darkMode ? 'bg-slate-800 text-rose-400' : 'bg-rose-50 text-rose-500'}`}><i className="fa-solid fa-right-from-bracket"></i></button>
+          <button onClick={() => { setConfirmModal({ message: 'Log out?', onConfirm: () => { setConfirmModal(null); localStorage.clear(); supabase.auth.signOut().catch(()=>{}); window.location.reload(); } }) }} className={`w-8 h-8 rounded-full flex items-center justify-center transition ${darkMode ? 'bg-slate-800 text-rose-400' : 'bg-rose-50 text-rose-500'}`}><i className="fa-solid fa-right-from-bracket"></i></button>
         </div>
       </header>
 
