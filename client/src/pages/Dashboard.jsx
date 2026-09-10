@@ -159,15 +159,39 @@ const Dashboard = ({ profile, setProfile, messDetails, session }) => {
     return () => supabase.removeChannel(channel)
   }, [profile?.mess_id, fetchAllDataCallback])
 
-  // ----- Helper functions (unchanged) -----
+  // ----- Helper functions for DB proxy to bypass RLS -----
   const getMemberName = (uid) => members.find(m => m.id === uid)?.full_name || 'Unknown'
+  const apiInsert = async (table, payload) => {
+    const token = session?.access_token || localStorage.getItem('mm_token');
+    const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/mess/db/insert`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({ table, payload })
+    });
+    const json = await res.json();
+    if (!res.ok) return { error: { message: json.error || 'Insert failed' } };
+    return { data: json.data, error: null };
+  };
 
+  const apiDelete = async (table, id) => {
+    const token = session?.access_token || localStorage.getItem('mm_token');
+    const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/mess/db/delete`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({ table, id })
+    });
+    const json = await res.json();
+    if (!res.ok) return { error: { message: json.error || 'Delete failed' } };
+    return { error: null };
+  };
+
+  // ----- Actions -----
   const logActivity = async (actionType, description) => {
     const newLog = { id: Date.now(), mess_id: profile.mess_id, user_name: profile.full_name, action_type: actionType, description, created_at: new Date().toISOString() }
     setLogs(prev => { const n = [newLog, ...prev]; updateCache(CACHE_KEYS.LOGS, n); return n })
-    if (isOnline) {
-      await supabase.from('activity_logs').insert([{ mess_id: profile.mess_id, user_name: profile.full_name, action_type: actionType, description }])
-    }
+      if (isOnline) {
+        await apiInsert('activity_logs', { mess_id: profile.mess_id, user_name: profile.full_name, action_type: actionType, description })
+      }
   }
 
   // ----- Chart logic (unchanged) -----
@@ -226,7 +250,7 @@ const Dashboard = ({ profile, setProfile, messDetails, session }) => {
         onConfirm: async () => {
           setMeals(prev => { const n = prev.filter(m => m.id !== existing.id); updateCache(CACHE_KEYS.MEALS, n); return n })
           await logActivity('DELETED', `${actorName} deleted ${targetName}'s ${type} meal on ${dateStr}`)
-          if (isOnline) await supabase.from('meals').delete().eq('id', existing.id)
+          if (isOnline) await apiDelete('meals', existing.id)
           showToast('Deleted')
           setSelectedCell(null)
           setConfirmModal(null)
@@ -242,7 +266,7 @@ const Dashboard = ({ profile, setProfile, messDetails, session }) => {
           setMeals(prev => { const n = [...prev, newMeal]; updateCache(CACHE_KEYS.MEALS, n); return n })
           await logActivity('ADDED', `${actorName} added 1 ${type} meal for ${targetName} on ${dateStr}`)
           if (isOnline) {
-            const { data } = await supabase.from('meals').insert([{ user_id: member.id, mess_id: profile.mess_id, date: dateStr, count: 1, meal_type: type }]).select().single()
+            const { data } = await apiInsert('meals', { user_id: member.id, mess_id: profile.mess_id, date: dateStr, count: 1, meal_type: type })
             if (data) setMeals(prev => { const n = prev.map(m => m.id === tempId ? data : m); updateCache(CACHE_KEYS.MEALS, n); return n })
           }
           showToast('Added')
@@ -262,7 +286,7 @@ const Dashboard = ({ profile, setProfile, messDetails, session }) => {
     setMealInput(p => ({ ...p, count: '' }))
     logActivity('ADDED', `Self Add: ${countVal} (${mealInput.type}) for ${mealInput.date}`)
     if (isOnline) {
-      const { data, error } = await supabase.from('meals').insert([{ user_id: session.user.id, mess_id: profile.mess_id, date: mealInput.date, count: countVal, meal_type: mealInput.type }]).select().single()
+      const { data, error } = await apiInsert('meals', { user_id: session.user.id, mess_id: profile.mess_id, date: mealInput.date, count: countVal, meal_type: mealInput.type })
       if (error) {
         console.error("Insert meal error:", error);
         showToast(`Failed to add meal: ${error.message}`, 'error');
@@ -281,7 +305,7 @@ const Dashboard = ({ profile, setProfile, messDetails, session }) => {
     setExpenseInput({ item: '', amount: '', date: expenseInput.date, forUserId: targetUserId })
     logActivity('ADDED', `Bazar: ${expenseInput.item} (${val}) for ${getMemberName(targetUserId)}`)
     if (isOnline) {
-      const { data } = await supabase.from('expenses').insert([{ user_id: targetUserId, mess_id: profile.mess_id, item: expenseInput.item, amount: val, date: expenseInput.date }]).select().single()
+      const { data } = await apiInsert('expenses', { user_id: targetUserId, mess_id: profile.mess_id, item: expenseInput.item, amount: val, date: expenseInput.date })
       if (data) setExpenses(p => p.map(e => e.id === tempId ? data : e))
     }
   }
@@ -294,7 +318,7 @@ const Dashboard = ({ profile, setProfile, messDetails, session }) => {
     const msg = { id: tempId, user_id: session.user.id, mess_id: profile.mess_id, text: txt, created_at: new Date().toISOString() }
     setMessages(p => { const n = [...p, msg]; updateCache(CACHE_KEYS.MESSAGES, n); return n })
     if (isOnline) {
-      const { data, error } = await supabase.from('messages').insert([{ user_id: session.user.id, mess_id: profile.mess_id, text: txt }]).select().single()
+      const { data, error } = await apiInsert('messages', { user_id: session.user.id, mess_id: profile.mess_id, text: txt })
       if (error) {
         console.error("Insert message error:", error);
         showToast(`Failed to send: ${error.message}`, 'error');
@@ -313,7 +337,7 @@ const Dashboard = ({ profile, setProfile, messDetails, session }) => {
       onConfirm: async () => {
         if (table === 'meals') setMeals(p => p.filter(m => m.id !== id))
         if (table === 'expenses') setExpenses(p => p.filter(e => e.id !== id))
-        if (isOnline) await supabase.from(table).delete().eq('id', id)
+        if (isOnline) await apiDelete(table, id)
         logActivity('DELETED', details)
         showToast('Deleted')
         setConfirmModal(null)

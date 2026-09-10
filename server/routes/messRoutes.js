@@ -1,11 +1,13 @@
 const express = require('express')
-const { updatePin, kickMember, resetMonthlyChart, createMess, joinMess, getDashboardData } = require('../controllers/messController')
+const { updatePin, kickMember, resetMonthlyChart, createMess, joinMess, getDashboardData, dbInsert, dbDelete } = require('../controllers/messController')
 const authMiddleware = require('../middlewares/authMiddleware')
 
 const router = express.Router()
 router.use(authMiddleware)
 
 router.get('/data/:messId', getDashboardData)
+router.post('/db/insert', dbInsert)
+router.post('/db/delete', dbDelete)
 router.post('/create', createMess)
 router.post('/join', joinMess)
 router.post('/update-pin', updatePin)

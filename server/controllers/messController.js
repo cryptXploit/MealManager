@@ -47,6 +47,20 @@ exports.resetMonthlyChart = async (req, res) => {
   res.json({ success: true });
 };
 
+exports.dbInsert = async (req, res) => {
+  const { table, payload } = req.body;
+  const { data, error } = await supabaseAdmin.from(table).insert(payload).select().single();
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ data });
+};
+
+exports.dbDelete = async (req, res) => {
+  const { table, id } = req.body;
+  const { error } = await supabaseAdmin.from(table).delete().eq('id', id);
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ success: true });
+};
+
 exports.getDashboardData = async (req, res) => {
   const { messId } = req.params;
   if (!messId) return res.status(400).json({ error: 'messId required' });
