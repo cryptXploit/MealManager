@@ -37,6 +37,9 @@ useEffect(() => {
 
   useEffect(() => {
     const init = async () => {
+      if (window.location.hash.includes('type=recovery')) {
+        setUpdatePasswordMode(true)
+      }
       const { data: { session: s } } = await supabase.auth.getSession()
       if (s) {
         setSession(s)
