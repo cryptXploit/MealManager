@@ -75,14 +75,14 @@ const Dashboard = ({ profile, setProfile, messDetails, session }) => {
   const refreshCallback = useRef(fetchAllDataCallback)
   useEffect(() => { refreshCallback.current = fetchAllDataCallback }, [fetchAllDataCallback])
 
+  // ----- Native touch listeners -----
+  const mainRef = useRef(null)
+
   const { isRefreshing, handleTouchStart, handleTouchMove, handleTouchEnd } = usePullToRefresh(
     mainRef,
     () => refreshCallback.current(),
     60
   )
-
-  // ----- Native touch listeners -----
-  const mainRef = useRef(null)
   useEffect(() => {
     const element = mainRef.current
     if (!element) return
