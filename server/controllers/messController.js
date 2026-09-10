@@ -72,11 +72,15 @@ exports.createMess = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 
-  console.log("Updating profile with new mess_id:", newMess.id);
+  console.log("Upserting profile with new mess_id:", newMess.id);
   const { error: updateError } = await supabaseAdmin
     .from('profiles')
-    .update({ mess_id: newMess.id })
-    .eq('id', userId);
+    .upsert({ 
+      id: userId, 
+      mess_id: newMess.id, 
+      email: req.user.email,
+      full_name: req.user.user_metadata?.full_name || req.user.email?.split('@')[0] || 'User'
+    });
 
   console.log("Profile update result:", updateError);
 
@@ -106,8 +110,12 @@ exports.joinMess = async (req, res) => {
 
   const { error: updateError } = await supabaseAdmin
     .from('profiles')
-    .update({ mess_id: mess.id })
-    .eq('id', userId);
+    .upsert({ 
+      id: userId, 
+      mess_id: mess.id, 
+      email: req.user.email,
+      full_name: req.user.user_metadata?.full_name || req.user.email?.split('@')[0] || 'User'
+    });
 
   if (updateError) return res.status(500).json({ error: updateError.message });
 
