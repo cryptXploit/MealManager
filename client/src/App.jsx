@@ -40,7 +40,7 @@ useEffect(() => {
       const { data: { session: s } } = await supabase.auth.getSession()
       if (s) {
         setSession(s)
-        await fetchProfileAndMess(s.user)
+        await fetchProfileAndMess(s.user, s.access_token)
       } else if (!profile) {
         setUiState('auth')
       }
@@ -56,19 +56,32 @@ useEffect(() => {
         setMessDetails(null)
         setUiState('auth')
       } else if (event === 'SIGNED_IN' && s) {
-        await fetchProfileAndMess(s.user)
+        await fetchProfileAndMess(s.user, s.access_token)
       }
     })
     return () => subscription.unsubscribe()
   }, [])
 
-  const fetchProfileAndMess = async (user) => {
-    let { data: prof } = await supabase.from('profiles').select('*').eq('id', user.id).single()
+  const fetchProfileAndMess = async (user, overrideToken) => {
+    const token = overrideToken || session?.access_token || localStorage.getItem('mm_token');
+    let prof = null;
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/mess/me`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const json = await res.json();
+        prof = json.profile;
+      }
+    } catch(e) { console.error("Error fetching profile via API", e); }
+
     if (!prof) {
       const name = user.user_metadata?.full_name || user.email.split('@')[0]
+      // Fallback insert, might fail due to RLS, but that's okay, backend upserts on mess join/create
       await supabase.from('profiles').insert([{ id: user.id, full_name: name, email: user.email }])
       prof = { id: user.id, full_name: name, mess_id: null, email: user.email }
     }
+    
     setProfile(prof)
     updateCache(CACHE_KEYS.PROFILE, prof)
     if (prof.mess_id) {
