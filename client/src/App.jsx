@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { supabase } from './services/supabaseClient'
 import { CACHE_KEYS, updateCache } from './utils/helpers'
 import AuthPage from './pages/AuthPage'
-import OnboardingPage from './pages/OnboardingPage'
+import CreateMessPage from './pages/CreateMessPage'
+import JoinMessPage from './pages/JoinMessPage'
 import GroupSelectPage from './pages/GroupSelectPage'
 import Dashboard from './pages/Dashboard'
 
@@ -16,7 +17,7 @@ function App() {
     return saved ? JSON.parse(saved) : null
   })
   const [uiState, setUiState] = useState(() => 
-    (profile && messDetails) ? 'dashboard' : (profile ? 'onboarding' : 'auth')
+    (profile && messDetails) ? 'dashboard' : (profile ? 'create_mess' : 'auth')
   )
   const [loading, setLoading] = useState(!profile)
   const [session, setSession] = useState(null)
@@ -76,7 +77,7 @@ useEffect(() => {
       updateCache(CACHE_KEYS.MESS, mess)
       setUiState('dashboard')
     } else {
-      setUiState('onboarding')
+      setUiState('create_mess')
     }
   }
 
@@ -87,8 +88,11 @@ useEffect(() => {
   if (uiState === 'auth') {
     return <AuthPage setSession={setSession} setProfile={setProfile} setUiState={setUiState} />
   }
-  if (uiState === 'onboarding') {
-    return <OnboardingPage profile={profile} session={session} setProfile={setProfile} setMessDetails={setMessDetails} setUiState={setUiState} />
+  if (uiState === 'create_mess') {
+    return <CreateMessPage profile={profile} session={session} setProfile={setProfile} setMessDetails={setMessDetails} setUiState={setUiState} />
+  }
+  if (uiState === 'join_mess') {
+    return <JoinMessPage profile={profile} session={session} setProfile={setProfile} setMessDetails={setMessDetails} setUiState={setUiState} />
   }
   if (uiState === 'group_select') {
     return <GroupSelectPage messDetails={messDetails} setUiState={setUiState} />
