@@ -39,7 +39,8 @@ const OnboardingPage = ({ profile, session, setProfile, setMessDetails, setUiSta
       setUiState('dashboard')
     } catch (err) {
       console.error(err);
-      showToast(messMode === 'create' ? 'Failed to create mess' : 'Mess not found or wrong PIN');
+      const errMsg = err.response?.data?.error || err.message || 'Unknown error';
+      showToast(messMode === 'create' ? `Failed to create mess: ${errMsg}` : `Failed to join: ${errMsg}`);
     } finally {
       setLoading(false)
     }
