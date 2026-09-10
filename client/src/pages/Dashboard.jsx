@@ -52,18 +52,18 @@ const Dashboard = ({ profile, setProfile, messDetails, session }) => {
     const messId = profileRef.current?.mess_id
     if (!messId || !isOnline) return
     try {
-      const [resM, resE, resMl, resMsg, resLogs] = await Promise.all([
-        supabase.from('profiles').select('*').eq('mess_id', messId),
-        supabase.from('expenses').select('*').eq('mess_id', messId).order('created_at', { ascending: false }),
-        supabase.from('meals').select('*').eq('mess_id', messId).order('date', { ascending: false }),
-        supabase.from('messages').select('*').eq('mess_id', messId).order('created_at', { ascending: true }),
-        supabase.from('activity_logs').select('*').eq('mess_id', messId).order('created_at', { ascending: false }).limit(1000)
-      ])
-      if (resM.data) { setMembers(resM.data); updateCache(CACHE_KEYS.MEMBERS, resM.data) }
-      if (resE.data) { setExpenses(resE.data); updateCache(CACHE_KEYS.EXPENSES, resE.data) }
-      if (resMl.data) { setMeals(resMl.data); updateCache(CACHE_KEYS.MEALS, resMl.data) }
-      if (resLogs.data) { setLogs(resLogs.data); updateCache(CACHE_KEYS.LOGS, resLogs.data) }
-      if (resMsg.data) { setMessages(resMsg.data); updateCache(CACHE_KEYS.MESSAGES, resMsg.data) }
+      const token = session?.access_token || localStorage.getItem('mm_token');
+      const apiRes = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/mess/data/${messId}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await apiRes.json();
+      
+      if (data.members) { setMembers(data.members); updateCache(CACHE_KEYS.MEMBERS, data.members) }
+      if (data.expenses) { setExpenses(data.expenses); updateCache(CACHE_KEYS.EXPENSES, data.expenses) }
+      if (data.meals) { setMeals(data.meals); updateCache(CACHE_KEYS.MEALS, data.meals) }
+      if (data.logs) { setLogs(data.logs); updateCache(CACHE_KEYS.LOGS, data.logs) }
+      if (data.messages) { setMessages(data.messages); updateCache(CACHE_KEYS.MESSAGES, data.messages) }
+      
       setConnStatus('connected')
     } catch (e) {
       setConnStatus('disconnected')

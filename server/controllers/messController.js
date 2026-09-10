@@ -34,19 +34,43 @@ exports.kickMember = async (req, res) => {
 }
 
 exports.resetMonthlyChart = async (req, res) => {
-  const { messId, yearMonth } = req.body
-  const startDate = `${yearMonth}-01`
-  const endDate = `${yearMonth}-31`
+  const { messId, yearMonth } = req.body;
+  if (!messId || !yearMonth) return res.status(400).json({ error: 'messId and yearMonth required' });
+
   const { error } = await supabaseAdmin
     .from('meals')
     .delete()
     .eq('mess_id', messId)
-    .gte('date', startDate)
-    .lte('date', endDate)
+    .like('date', `${yearMonth}-%`);
 
-  if (error) return res.status(500).json({ error: error.message })
-  res.json({ success: true })
-}
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ success: true });
+};
+
+exports.getDashboardData = async (req, res) => {
+  const { messId } = req.params;
+  if (!messId) return res.status(400).json({ error: 'messId required' });
+
+  try {
+    const [resM, resE, resMl, resMsg, resLogs] = await Promise.all([
+      supabaseAdmin.from('profiles').select('*').eq('mess_id', messId),
+      supabaseAdmin.from('expenses').select('*').eq('mess_id', messId).order('created_at', { ascending: false }),
+      supabaseAdmin.from('meals').select('*').eq('mess_id', messId).order('date', { ascending: false }),
+      supabaseAdmin.from('messages').select('*').eq('mess_id', messId).order('created_at', { ascending: true }),
+      supabaseAdmin.from('activity_logs').select('*').eq('mess_id', messId).order('created_at', { ascending: false }).limit(1000)
+    ]);
+
+    res.json({
+      members: resM.data || [],
+      expenses: resE.data || [],
+      meals: resMl.data || [],
+      messages: resMsg.data || [],
+      logs: resLogs.data || []
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 exports.createMess = async (req, res) => {
   console.log("createMess called with body:", req.body);
