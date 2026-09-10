@@ -37,6 +37,7 @@ const Dashboard = ({ profile, setProfile, messDetails, session }) => {
   const [mealInput, setMealInput] = useState({ date: new Date().toISOString().split('T')[0], count: '', type: 'D' })
   const [expenseInput, setExpenseInput] = useState({ item: '', amount: '', date: new Date().toISOString().split('T')[0], forUserId: session?.user?.id || '' })
   const [chatInput, setChatInput] = useState('')
+  const chatInputRef = useRef(null)
   const [newPin, setNewPin] = useState('')
   const [addMemberEmail, setAddMemberEmail] = useState('')
 
@@ -74,7 +75,8 @@ const Dashboard = ({ profile, setProfile, messDetails, session }) => {
   const refreshCallback = useRef(fetchAllDataCallback)
   useEffect(() => { refreshCallback.current = fetchAllDataCallback }, [fetchAllDataCallback])
 
-  const { pullY, isRefreshing, handleTouchStart, handleTouchMove, handleTouchEnd } = usePullToRefresh(
+  const { isRefreshing, handleTouchStart, handleTouchMove, handleTouchEnd } = usePullToRefresh(
+    mainRef,
     () => refreshCallback.current(),
     60
   )
@@ -311,8 +313,9 @@ const Dashboard = ({ profile, setProfile, messDetails, session }) => {
   }
 
   const sendMessage = async () => {
-    if (!chatInput.trim()) return
-    const txt = chatInput
+    const txt = chatInputRef.current?.value || chatInput;
+    if (!txt.trim()) return
+    if (chatInputRef.current) chatInputRef.current.value = ''
     setChatInput('')
     const tempId = 'temp-' + Date.now()
     const msg = { id: tempId, user_id: session.user.id, mess_id: profile.mess_id, text: txt, created_at: new Date().toISOString() }
@@ -322,6 +325,7 @@ const Dashboard = ({ profile, setProfile, messDetails, session }) => {
       if (error) {
         console.error("Insert message error:", error);
         showToast(`Failed to send: ${error.message}`, 'error');
+        if (chatInputRef.current) chatInputRef.current.value = txt
         setChatInput(txt); // restore input
         setMessages(prev => prev.filter(m => m.id !== tempId)); // remove local temp message
       } else if (data) { 
@@ -493,18 +497,13 @@ const Dashboard = ({ profile, setProfile, messDetails, session }) => {
       <main
         ref={mainRef}
         className="flex-1 overflow-y-auto p-4 space-y-6 pb-32 overscroll-contain no-scrollbar scroll-smooth"
-        style={{ transform: `translateY(${pullY > 0 ? pullY * 0.5 : 0}px)` }}
       >
         {/* Pull indicator + Refreshed message (UPDATED) */}
-        {(pullY > 0 || isRefreshing) && (
+        {isRefreshing && (
           <div className="flex justify-center items-center py-2 transition-all duration-200">
-            {isRefreshing ? (
-              <div className="flex items-center gap-2 bg-emerald-500 text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-lg animate-pulse">
-                <i className="fa-solid fa-check-circle"></i> Refreshed!
-              </div>
-            ) : (
-              <div className="w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-            )}
+            <div className="flex items-center gap-2 bg-emerald-500 text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-lg animate-pulse">
+              <i className="fa-solid fa-check-circle"></i> Refreshed!
+            </div>
           </div>
         )}
 
@@ -697,8 +696,8 @@ const Dashboard = ({ profile, setProfile, messDetails, session }) => {
               <div ref={chatBottomRef}></div>
             </div>
             <div className={`p-2 rounded-xl border flex items-center gap-2 mt-2 ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-transparent border-slate-200'}`}>
-              <input type="text" placeholder="Type a message..." className="flex-1 bg-transparent p-2 outline-none text-sm" value={chatInput} onChange={e => setChatInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && sendMessage()} />
-              <button onClick={sendMessage} disabled={!chatInput.trim()} className="p-2 bg-indigo-600 text-white rounded-lg disabled:opacity-50"><i className="fa-solid fa-paper-plane"></i></button>
+              <input type="text" placeholder="Type a message..." className="flex-1 bg-transparent p-2 outline-none text-sm" ref={chatInputRef} defaultValue={chatInput} onKeyDown={e => e.key === 'Enter' && sendMessage()} />
+              <button onClick={sendMessage} className="p-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"><i className="fa-solid fa-paper-plane"></i></button>
             </div>
           </div>
         )}
@@ -768,7 +767,7 @@ const TimeAwareHero = ({ name, monthName, amount, darkMode }) => {
       <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-40">{renderEffects()}</div>
       <div className="relative z-10">
         <div className="flex justify-between items-start mb-4">
-          <div><p className="text-xs font-bold opacity-80 uppercase tracking-widest mb-1 shadow-black drop-shadow-md">{monthName}</p><AnimatedGreeting text={`${timeData.text}, @${name}!`} /></div>
+          <div><p className="text-xs font-bold opacity-80 uppercase tracking-widest mb-1 shadow-black drop-shadow-md">{monthName}</p><AnimatedGreeting text={`${timeData.text}, ${name}!`} /></div>
           <div className="bg-white/20 p-2.5 rounded-xl backdrop-blur-md border border-white/30 shadow-lg"><i className={`fa-solid ${timeData.type === 'night' ? 'fa-moon' : timeData.type === 'noon' ? 'fa-sun' : 'fa-bowl-food'} text-xl`}></i></div>
         </div>
         <div className="mt-6"><p className="text-xs font-bold opacity-80 uppercase mb-1 drop-shadow-md">Current Meal Rate</p><h2 className="text-5xl font-black tracking-tighter drop-shadow-lg">{amount}</h2></div>

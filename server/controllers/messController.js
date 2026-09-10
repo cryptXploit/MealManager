@@ -165,3 +165,10 @@ exports.getMe = async (req, res) => {
   if (error && error.code !== 'PGRST116') return res.status(500).json({ error: error.message });
   res.json({ profile: data || null });
 };
+
+exports.getMe = async (req, res) => {
+  const userId = req.user.id;
+  const { data, error } = await supabaseAdmin.from('profiles').select('*').eq('id', userId).single();
+  if (error && error.code !== 'PGRST116') return res.status(500).json({ error: error.message });
+  res.json({ profile: data || null });
+};

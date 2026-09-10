@@ -1,12 +1,19 @@
 import { useState, useRef, useCallback } from 'react'
 
-function usePullToRefresh(onRefresh, threshold = 60) {
-  const [pullY, setPullY] = useState(0)
+function usePullToRefresh(elementRef, onRefresh, threshold = 60) {
   const [isRefreshing, setIsRefreshing] = useState(false)
   const startY = useRef(0)
+  const currentY = useRef(0)
   const isPulling = useRef(false)
   const refreshingLock = useRef(false)
   const refreshPromise = useRef(null)
+
+  const setTransform = (y) => {
+    currentY.current = y
+    if (elementRef?.current) {
+      elementRef.current.style.transform = `translateY(${y > 0 ? y * 0.5 : 0}px)`
+    }
+  }
 
   const handleTouchStart = useCallback((e) => {
     if (refreshingLock.current) return
@@ -23,23 +30,24 @@ function usePullToRefresh(onRefresh, threshold = 60) {
     const diff = e.touches[0].clientY - startY.current
     if (diff > 0 && e.currentTarget.scrollTop <= 0) {
       e.preventDefault()
-      setPullY(Math.min(diff * 0.4, 150))
+      setTransform(Math.min(diff * 0.4, 150))
     } else {
-      setPullY(0)
+      setTransform(0)
     }
-  }, [])
+  }, [elementRef])
 
   const handleTouchEnd = useCallback(async () => {
     if (!isPulling.current || refreshingLock.current) {
       isPulling.current = false
-      setPullY(0)
+      setTransform(0)
       return
     }
     isPulling.current = false
-    if (pullY > threshold && !refreshingLock.current) {
+    
+    if (currentY.current > threshold && !refreshingLock.current) {
       refreshingLock.current = true
       setIsRefreshing(true)
-      setPullY(threshold)
+      setTransform(threshold)
 
       if (refreshPromise.current) return
       refreshPromise.current = onRefresh()
@@ -48,17 +56,17 @@ function usePullToRefresh(onRefresh, threshold = 60) {
 
       setTimeout(() => {
         setIsRefreshing(false)
-        setPullY(0)
+        setTransform(0)
         setTimeout(() => {
           refreshingLock.current = false
         }, 300)
       }, 500)
     } else {
-      setPullY(0)
+      setTransform(0)
     }
-  }, [pullY, threshold, onRefresh])
+  }, [threshold, onRefresh, elementRef])
 
-  return { pullY, isRefreshing, handleTouchStart, handleTouchMove, handleTouchEnd }
+  return { isRefreshing, handleTouchStart, handleTouchMove, handleTouchEnd }
 }
 
 export default usePullToRefresh

@@ -13,8 +13,12 @@ const authMiddleware = async (req, res, next) => {
   if (error || !user) {
     return res.status(401).json({ error: 'Invalid or expired token' })
   }
+
+  // Fetch the user's profile to know their mess_id
+  const { data: profile } = await supabaseAdmin.from('profiles').select('mess_id').eq('id', user.id).single()
   
   req.user = user
+  req.user.mess_id = profile?.mess_id || null
   next()
 }
 
