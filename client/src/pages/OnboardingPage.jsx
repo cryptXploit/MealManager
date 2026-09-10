@@ -22,10 +22,12 @@ const OnboardingPage = ({ profile, session, setProfile, setMessDetails, setUiSta
     
     try {
       const endpoint = messMode === 'create' ? '/mess/create' : '/mess/join';
+      console.log("Calling endpoint:", endpoint, messInput);
       const response = await apiClient.post(endpoint, {
         name: messInput.name,
         pin: messInput.pin
       });
+      console.log("Response data:", response.data);
 
       const data = response.data.mess;
       if (!data) throw new Error('No data returned');

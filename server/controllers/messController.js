@@ -49,26 +49,43 @@ exports.resetMonthlyChart = async (req, res) => {
 }
 
 exports.createMess = async (req, res) => {
+  console.log("createMess called with body:", req.body);
   const { name, pin } = req.body;
   const userId = req.user.id;
 
-  if (!name || !pin) return res.status(400).json({ error: 'Name and PIN required' });
+  if (!name || !pin) {
+    console.log("Missing name or pin");
+    return res.status(400).json({ error: 'Name and PIN required' });
+  }
 
+  console.log("Inserting into supabase messes table...");
   const { data: newMess, error } = await supabaseAdmin
     .from('messes')
     .insert([{ name, pin }])
     .select()
     .single();
 
-  if (error) return res.status(500).json({ error: error.message });
+  console.log("Supabase insert result:", { newMess, error });
 
+  if (error) {
+    console.log("Error inserting mess:", error.message);
+    return res.status(500).json({ error: error.message });
+  }
+
+  console.log("Updating profile with new mess_id:", newMess.id);
   const { error: updateError } = await supabaseAdmin
     .from('profiles')
     .update({ mess_id: newMess.id })
     .eq('id', userId);
 
-  if (updateError) return res.status(500).json({ error: updateError.message });
+  console.log("Profile update result:", updateError);
 
+  if (updateError) {
+    console.log("Error updating profile:", updateError.message);
+    return res.status(500).json({ error: updateError.message });
+  }
+
+  console.log("Sending success response!");
   res.json({ mess: newMess });
 }
 

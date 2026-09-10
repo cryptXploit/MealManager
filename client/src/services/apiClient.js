@@ -8,17 +8,26 @@ const apiClient = axios.create({
 
 // Request interceptor to add auth token
 apiClient.interceptors.request.use(async (config) => {
-  const { data: { session } } = await supabase.auth.getSession()
+  console.log("Interceptor: starting getSession...");
+  const { data: { session }, error } = await supabase.auth.getSession();
+  console.log("Interceptor: getSession finished", { session, error });
   const token = session?.access_token
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   }
+  console.log("Interceptor: Request proceeding to", config.url);
   return config
-}, (error) => Promise.reject(error))
+}, (error) => {
+  console.error("Interceptor request error:", error);
+  return Promise.reject(error);
+})
 
 // Response interceptor for error handling
 apiClient.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.log("Interceptor: Response received", response.status);
+    return response;
+  },
   (error) => {
     console.error('API Error:', error.response?.data || error.message)
     return Promise.reject(error)
