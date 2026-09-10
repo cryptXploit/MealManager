@@ -98,6 +98,28 @@ useEffect(() => {
     return <div className="h-screen flex items-center justify-center text-indigo-500 font-bold animate-pulse bg-white dark:bg-slate-900">Loading App...</div>
   }
 
+  if (updatePasswordMode) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900 p-6">
+        <div className="w-full max-w-md bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-xl border dark:border-slate-700">
+          <h2 className="text-xl font-bold mb-6 text-slate-900 dark:text-white">Set New Password</h2>
+          <input type="password" id="new_pwd" placeholder="Enter new password" className="w-full p-4 rounded-xl border bg-transparent dark:border-slate-600 dark:text-white mb-4" />
+          <button onClick={async () => {
+             const p = document.getElementById('new_pwd').value;
+             if(p.length < 6) return alert('Password must be at least 6 characters');
+             const { error } = await supabase.auth.updateUser({ password: p });
+             if(error) alert(error.message);
+             else { 
+               alert('Password updated successfully!'); 
+               setUpdatePasswordMode(false);
+               setUiState('dashboard');
+             }
+          }} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl transition-all">Update Password</button>
+        </div>
+      </div>
+    )
+  }
+
   if (uiState === 'auth') {
     return <AuthPage setSession={setSession} setProfile={setProfile} setUiState={setUiState} />
   }

@@ -16,7 +16,8 @@ const AuthPage = ({ setSession, setProfile, setUiState }) => {
   const handleAuth = async () => {
     if (!navigator.onLine) return showToast('Internet needed', 'error')
     const { email, password, fullName } = authInput
-    if (!email || !password) return showToast('Fill all fields', 'error')
+    if (authMode === 'forgot' && !email) return showToast('Email required', 'error')
+    if (authMode !== 'forgot' && (!email || !password)) return showToast('Fill all fields', 'error')
     if (authMode === 'signup' && !fullName) return showToast('Name required', 'error')
 
     setLoading(true)
