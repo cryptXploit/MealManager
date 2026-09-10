@@ -11,6 +11,7 @@ exports.updatePin = async (req, res) => {
   if (error) return res.status(400).json({ error: error.details[0].message })
 
   const { messId, newPin } = value
+  if (messId !== req.user.mess_id) return res.status(403).json({ error: 'Unauthorized' })
   const { data, error: dbError } = await supabaseAdmin
     .from('messes')
     .update({ pin: newPin })
@@ -24,6 +25,10 @@ exports.updatePin = async (req, res) => {
 
 exports.kickMember = async (req, res) => {
   const { memberId } = req.params
+  const { data: targetProfile } = await supabaseAdmin.from('profiles').select('mess_id').eq('id', memberId).single()
+  if (targetProfile?.mess_id !== req.user.mess_id) {
+    return res.status(403).json({ error: 'Unauthorized to kick this member' })
+  }
   const { error } = await supabaseAdmin
     .from('profiles')
     .update({ mess_id: null })
@@ -36,6 +41,7 @@ exports.kickMember = async (req, res) => {
 exports.resetMonthlyChart = async (req, res) => {
   const { messId, yearMonth } = req.body;
   if (!messId || !yearMonth) return res.status(400).json({ error: 'messId and yearMonth required' });
+  if (messId !== req.user.mess_id) return res.status(403).json({ error: 'Unauthorized' });
 
   const { error } = await supabaseAdmin
     .from('meals')

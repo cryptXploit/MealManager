@@ -2,23 +2,29 @@ import axios from 'axios'
 import { supabase } from './supabaseClient'
 
 const apiClient = axios.create({
-  baseURL: 'http://localhost:5005/api',
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5005/api',
   headers: { 'Content-Type': 'application/json' }
 })
 
-// Request interceptor to add auth token
-apiClient.interceptors.request.use(async (config) => {
-  console.log("Interceptor: starting getSession...");
-  const { data: { session }, error } = await supabase.auth.getSession();
-  console.log("Interceptor: getSession finished", { session, error });
-  const token = session?.access_token
+const getToken = () => {
+  try {
+    const key = Object.keys(localStorage).find(k => k.startsWith('sb-') && k.endsWith('-auth-token'));
+    if (!key) return null;
+    const parsed = JSON.parse(localStorage.getItem(key));
+    return parsed?.access_token || null;
+  } catch (e) {
+    return null;
+  }
+};
+
+// Request interceptor to add auth token synchronously
+apiClient.interceptors.request.use((config) => {
+  const token = getToken();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   }
-  console.log("Interceptor: Request proceeding to", config.url);
   return config
 }, (error) => {
-  console.error("Interceptor request error:", error);
   return Promise.reject(error);
 })
 
