@@ -65,7 +65,7 @@ useEffect(() => {
   const fetchProfileAndMess = async (user) => {
     let { data: prof } = await supabase.from('profiles').select('*').eq('id', user.id).single()
     if (!prof) {
-      const name = user.email.split('@')[0]
+      const name = user.user_metadata?.full_name || user.email.split('@')[0]
       await supabase.from('profiles').insert([{ id: user.id, full_name: name, email: user.email }])
       prof = { id: user.id, full_name: name, mess_id: null, email: user.email }
     }
