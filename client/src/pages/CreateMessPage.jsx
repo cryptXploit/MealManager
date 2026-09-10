@@ -72,7 +72,7 @@ const CreateMessPage = ({ profile, session, setProfile, setMessDetails, setUiSta
   }
 
   const handleLogout = async () => {
-    await supabase.auth.signOut()
+    try { await supabase.auth.signOut() } catch (e) { console.error("SignOut error:", e) }
     localStorage.clear()
     setUiState('auth')
   }
