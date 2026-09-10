@@ -20,13 +20,18 @@ const CreateMessPage = ({ profile, session, setProfile, setMessDetails, setUiSta
     
     try {
       // Bypass apiClient interceptors completely to avoid any hang issues
-      const { data: { session: currentSession } } = await supabase.auth.getSession();
-      const token = currentSession?.access_token;
+      console.log("Using existing session prop...");
+      const token = session?.access_token;
       
       if (!token) throw new Error('No authentication token found');
 
       // Use raw fetch
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5005/api';
+      const apiUrl = 'http://localhost:5005/api';
+      console.log("Fetching from:", apiUrl);
+      
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
       const response = await fetch(`${apiUrl}/mess/create`, {
         method: 'POST',
         headers: {
@@ -36,8 +41,11 @@ const CreateMessPage = ({ profile, session, setProfile, setMessDetails, setUiSta
         body: JSON.stringify({
           name: messInput.name,
           pin: messInput.pin
-        })
+        }),
+        signal: controller.signal
       });
+      
+      clearTimeout(timeoutId);
 
       const responseData = await response.json();
 
