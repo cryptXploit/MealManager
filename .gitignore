@@ -14,3 +14,10 @@ client/.env.development
 client/.env.production
 server/.env.production
 
+*.md
+!README.md
+
+
+
+client/dist
+client/.idea

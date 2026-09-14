@@ -26,7 +26,7 @@ const JoinMessPage = ({ profile, session, setProfile, setMessDetails, setUiState
       if (!token) throw new Error('No authentication token found');
 
       // Use raw fetch
-      const apiUrl = 'http://localhost:5005/api';
+      const apiUrl = import.meta.env.VITE_API_URL;
       console.log("Fetching from:", apiUrl);
       
       const controller = new AbortController();

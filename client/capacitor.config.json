@@ -1,0 +1,5 @@
+{
+  "appId": "com.mealmanager.app",
+  "appName": "MealManager",
+  "webDir": "dist"
+}
