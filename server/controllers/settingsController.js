@@ -35,7 +35,7 @@ exports.resetMonthlyChart = async (req, res) => {
   if (messId !== req.user.mess_id) return res.status(403).json({ error: 'Unauthorized' });
 
   const { error } = await supabaseAdmin
-    .from('meals').delete().eq('mess_id', messId).like('date', \\-%\);
+    .from('meals').delete().eq('mess_id', messId).like('date', `${yearMonth}-%`);
   if (error) return res.status(500).json({ error: error.message });
   res.json({ success: true });
 };
