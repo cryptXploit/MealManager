@@ -79,6 +79,19 @@ const HomeTab = ({
 }) => {
   const [view, setView] = useState('overview'); // 'overview' | 'chart'
 
+  useEffect(() => {
+    const mainEl = document.querySelector('main');
+    if (!mainEl) return;
+    
+    if (view === 'chart') {
+      mainEl.classList.remove('overflow-y-auto', 'pb-32', 'space-y-6');
+      mainEl.classList.add('overflow-hidden', 'flex', 'flex-col', 'pb-[60px]', 'p-2');
+    } else {
+      mainEl.classList.add('overflow-y-auto', 'pb-32', 'space-y-6');
+      mainEl.classList.remove('overflow-hidden', 'flex', 'flex-col', 'pb-[60px]', 'p-2');
+    }
+  }, [view]);
+
   const downloadChartPDF = () => {
     const el = document.getElementById('chart-container');
     if (el) html2pdf().from(el).set({ margin: [10,10], filename: 'Meal_Chart.pdf', html2canvas: { scale: 2 }, jsPDF: { orientation: 'landscape' } }).save();
@@ -91,7 +104,7 @@ const HomeTab = ({
   };
 
   return (
-    <div className="fade-in pb-4">
+    <div className={`fade-in ${view === 'chart' ? 'flex-1 flex flex-col h-full' : 'pb-4'}`}>
       {/* Tab Switcher for Home */}
       <div className={`flex p-1 mb-3 rounded-xl border backdrop-blur-md shadow-sm ${darkMode ? 'bg-slate-800/80 border-slate-700' : 'bg-slate-100/80 border-slate-200'}`}>
         <button 
@@ -173,23 +186,24 @@ const HomeTab = ({
       )}
 
       {view === 'chart' && (
-        <div className={`fade-in rounded-2xl shadow-xl border overflow-hidden flex flex-col backdrop-blur-xl ${darkMode ? 'bg-slate-800/90 border-slate-700' : 'bg-white/90 border-slate-200'}`}>
+        <div className={`flex-1 fade-in rounded-2xl shadow-xl border overflow-hidden flex flex-col ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
           <div className="p-2 px-3 border-b dark:border-slate-700 flex justify-between items-center bg-gradient-to-r from-purple-700 to-indigo-800 text-white shadow-inner">
             <input 
               type="month" 
-              value={`${currentDate.getFullYear()}-${String(currentDate.getMonth()+1).padStart(2,'0')}`} 
-              onChange={handleMonthChange} 
-              className="bg-white/20 backdrop-blur-md text-white font-bold text-xs outline-none border border-white/30 rounded-lg px-2 py-1 max-w-[130px] focus:ring-2 focus:ring-white/50 transition-all cursor-pointer" 
+              className="bg-white/20 backdrop-blur-md text-white font-bold text-xs outline-none border border-white/30 rounded-lg px-2 py-1 max-w-[130px] focus:ring-2 focus:ring-white/50 transition-all cursor-pointer"
+              value={`${currentDate.getFullYear()}-${String(currentDate.getMonth()+1).padStart(2, '0')}`}
+              onChange={e => {
+                if(e.target.value) {
+                  const [y,m] = e.target.value.split('-');
+                  setCurrentDate(new Date(parseInt(y), parseInt(m)-1, 1));
+                }
+              }}
             />
-            <button 
-              onClick={downloadChartPDF} 
-              className="w-8 h-8 flex items-center justify-center rounded-lg bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 hover:bg-emerald-500 hover:text-white transition-all active:scale-95 hover:shadow-lg shadow-emerald-500/20" 
-              title="Download PDF"
-            >
+            <button onClick={downloadChartPDF} className="w-8 h-8 flex items-center justify-center rounded-lg bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 hover:bg-emerald-500 hover:text-white transition-all active:scale-95 hover:shadow-lg shadow-emerald-500/20" title="Download PDF">
               <i className="fa-solid fa-file-pdf text-sm"></i>
             </button>
           </div>
-          <div id="chart-container" className={`chart-container overflow-auto tiny-scrollbar max-h-[70vh] ${darkMode ? 'bg-slate-900/50' : 'bg-slate-50/50'}`}>
+          <div id="chart-container" className={`chart-container flex-1 overflow-auto tiny-scrollbar ${darkMode ? 'bg-slate-900/50' : 'bg-slate-50/50'}`}>
             <table className="chart-table w-full">
               <thead>
                 <tr>
