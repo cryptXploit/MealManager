@@ -422,27 +422,27 @@ const Dashboard = ({ profile, setProfile, messDetails, setMessDetails, session }
       </main>
 
       {/* Bottom Navigation */}
-      <nav className={`fixed bottom-0 left-0 right-0 border-t pb-safe pt-2 pb-2 z-30 backdrop-blur-xl shadow-[0_-10px_40px_rgba(0,0,0,0.05)] ${darkMode ? 'bg-slate-900/90 border-slate-800' : 'bg-white/90 border-slate-200'}`}>
-        <div className="flex justify-around items-center h-14 max-w-xl mx-auto px-2">
+      <nav className={`fixed bottom-0 left-0 right-0 z-30 pb-safe ${darkMode ? 'bg-slate-900/95 border-t border-slate-800' : 'bg-slate-50/95 border-t border-slate-200'}`} style={{ backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)' }}>
+        <div className="flex justify-around items-end h-[55px] max-w-xl mx-auto px-1 pb-1">
           {[
-            { id: 'home', icon: 'fa-chart-pie', label: 'Home', color: 'indigo' },
-            { id: 'meals', icon: 'fa-utensils', label: 'Meal', color: 'emerald' },
-            { id: 'bazar', icon: 'fa-cart-shopping', label: 'Bazar', color: 'orange' },
-            { id: 'chat', icon: 'fa-message', label: 'Chat', color: 'sky' },
-            { id: 'logs', icon: 'fa-clock-rotate-left', label: 'Logs', color: 'cyan' },
-          ].map((tab) => (
-            <button 
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)} 
-              className={`relative flex flex-col items-center justify-center w-full h-full space-y-1 transition-all duration-300 ${activeTab === tab.id ? `text-${tab.color}-500 -translate-y-1 scale-110` : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300'}`}
-            >
-              {activeTab === tab.id && (
-                <span className={`absolute -top-3 w-1.5 h-1.5 rounded-full bg-${tab.color}-500 shadow-[0_0_10px_rgba(var(--color-${tab.color}-500),0.8)]`}></span>
-              )}
-              <i className={`fa-solid ${tab.icon} text-xl transition-all`}></i>
-              <span className={`text-[9px] font-bold tracking-wider ${activeTab === tab.id ? 'opacity-100' : 'opacity-0'} transition-opacity absolute -bottom-3`}>{tab.label}</span>
-            </button>
-          ))}
+            { id: 'home', icon: 'fa-chart-pie', label: 'Home', activeClass: 'text-indigo-600 dark:text-indigo-400' },
+            { id: 'meals', icon: 'fa-utensils', label: 'Meal', activeClass: 'text-emerald-600 dark:text-emerald-400' },
+            { id: 'bazar', icon: 'fa-cart-shopping', label: 'Bazar', activeClass: 'text-orange-600 dark:text-orange-400' },
+            { id: 'chat', icon: 'fa-message', label: 'Chat', activeClass: 'text-sky-600 dark:text-sky-400' },
+            { id: 'logs', icon: 'fa-clock-rotate-left', label: 'Logs', activeClass: 'text-cyan-600 dark:text-cyan-400' },
+          ].map((tab) => {
+            const isActive = activeTab === tab.id;
+            return (
+              <button 
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)} 
+                className={`flex flex-col items-center justify-center w-full h-full transition-colors active:scale-95 ${isActive ? tab.activeClass : 'text-slate-400 dark:text-slate-500 hover:text-slate-500'}`}
+              >
+                <i className={`fa-solid ${tab.icon} ${isActive ? 'text-[20px] mb-1' : 'text-[18px] mb-1'}`}></i>
+                <span className={`text-[10px] font-bold tracking-wide ${isActive ? 'opacity-100' : 'opacity-80'}`}>{tab.label}</span>
+              </button>
+            );
+          })}
         </div>
       </nav>
 
