@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import html2pdf from 'html2pdf.js';
 import { formatMoney } from '../../utils/helpers';
 import apiClient from '../../services/apiClient';
@@ -91,6 +91,16 @@ const HomeTab = ({
       mainEl.classList.remove('overflow-hidden', 'flex', 'flex-col', 'pb-[60px]', 'p-2');
     }
   }, [view]);
+
+  const todayRef = useRef(null);
+  
+  useEffect(() => {
+    if (view === 'chart' && todayRef.current) {
+      setTimeout(() => {
+        todayRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 150);
+    }
+  }, [view, currentDate]);
 
   const downloadChartPDF = () => {
     const el = document.getElementById('chart-container');
@@ -221,12 +231,21 @@ const HomeTab = ({
                   ))}
                 </tr>
               </thead>
-              <tbody>
-                {Array.from({ length: daysInMonth }, (_, i) => i + 1).map(day => {
-                  const dateStr = `${currentDate.getFullYear()}-${String(currentDate.getMonth()+1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-                  return (
-                    <tr key={day} className="transition-colors hover:bg-black/5 dark:hover:bg-white/5">
-                        <td className={`sticky-col font-bold text-[10px] ${darkMode ? 'sticky-col-dark bg-slate-800 border-slate-700 text-slate-300' : 'bg-white border-slate-200 text-slate-600'}`}>{day}</td>
+                <tbody>
+                  {Array.from({ length: daysInMonth }, (_, i) => i + 1).map(day => {
+                    const dateStr = `${currentDate.getFullYear()}-${String(currentDate.getMonth()+1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                    const realToday = new Date();
+                    const isToday = day === realToday.getDate() && currentDate.getMonth() === realToday.getMonth() && currentDate.getFullYear() === realToday.getFullYear();
+                    
+                    return (
+                      <tr 
+                        key={day} 
+                        ref={isToday ? todayRef : null}
+                        className={`transition-colors hover:bg-black/5 dark:hover:bg-white/5 ${isToday ? 'bg-indigo-50/80 dark:bg-indigo-900/30' : ''}`}
+                      >
+                          <td className={`sticky-col font-bold text-[10px] ${isToday ? 'text-indigo-600 dark:text-indigo-400 border-r-2 border-r-indigo-500' : ''} ${darkMode ? 'sticky-col-dark bg-slate-800 border-slate-700 text-slate-300' : 'bg-white border-slate-200 text-slate-600'}`}>
+                            {isToday ? <div className="flex flex-col items-center justify-center"><span>{day}</span><span className="text-[6px] uppercase tracking-tighter opacity-80 -mt-1">Today</span></div> : day}
+                          </td>
                         {sortedMembers.map(m => {
                           const dMeal = mealLookup[`${m.id}_${dateStr}_D`];
                           const nMeal = mealLookup[`${m.id}_${dateStr}_N`];
