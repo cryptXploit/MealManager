@@ -80,8 +80,7 @@ function App() {
 
     if (!prof) {
       const name = user.user_metadata?.full_name || user.email.split('@')[0]
-      // Fallback insert, might fail due to RLS, but that's okay, backend upserts on mess join/create
-      await supabase.from('profiles').insert([{ id: user.id, full_name: name, email: user.email }])
+      // We skip direct DB insert here because RLS blocks it (403). Backend handles it on mess creation/join.
       prof = { id: user.id, full_name: name, mess_id: null, email: user.email }
     }
     

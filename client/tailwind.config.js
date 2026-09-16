@@ -6,7 +6,16 @@ export default {
   ],
   darkMode: 'class', // important for dark mode toggle
   theme: {
-    extend: {},
+    extend: {
+      keyframes: {
+        shimmer: {
+          '100%': { transform: 'translateX(100%) skewX(-12deg)' }
+        }
+      },
+      animation: {
+        'shimmer': 'shimmer 1.5s infinite'
+      }
+    },
   },
   plugins: [],
 }

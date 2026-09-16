@@ -17,7 +17,7 @@ server/.env.production
 *.md
 !README.md
 
-
+supabase/*
 
 client/dist
 client/.idea
