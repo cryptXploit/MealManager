@@ -1,6 +1,6 @@
 const supabaseAdmin = require('../services/supabaseAdmin');
 exports.addExpense = async (req, res) => {
-  const { payload } = req.body;
+  const payload = req.body.payload || req.body;
   if (!payload || payload.mess_id !== req.user.mess_id) return res.status(403).json({ error: 'Unauthorized' });
   const { data, error } = await supabaseAdmin.from('expenses').insert(payload).select().single();
   if (error) return res.status(500).json({ error: error.message });
@@ -14,3 +14,4 @@ exports.deleteExpense = async (req, res) => {
   if (error) return res.status(500).json({ error: error.message });
   res.json({ success: true });
 };
+
