@@ -342,7 +342,10 @@ const Dashboard = ({ profile, setProfile, messDetails, setMessDetails, session }
         isSameMonth={isSameMonth}
       />
 
-      <main ref={mainRef} className="flex-1 overflow-y-auto p-4 space-y-6 pb-32 overscroll-contain no-scrollbar scroll-smooth">
+      <main 
+        ref={mainRef} 
+        className={`flex-1 overscroll-contain no-scrollbar scroll-smooth ${activeTab === 'chat' ? 'overflow-hidden flex flex-col p-2 pb-[60px]' : 'overflow-y-auto p-4 space-y-6 pb-32'}`}
+      >
         {isRefreshing && (
           <div className="flex justify-center items-center py-2 transition-all duration-200">
             <div className="flex items-center gap-2 bg-emerald-500/90 backdrop-blur-md text-white px-5 py-2 rounded-full text-xs font-bold shadow-lg animate-pulse">

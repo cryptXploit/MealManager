@@ -64,8 +64,8 @@ const ChatTab = ({
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-140px)] fade-in">
-      <div className="flex-1 overflow-y-auto overscroll-contain smooth-scroll space-y-3 pb-4 pr-1 no-scrollbar">
+    <div className="flex flex-col h-full fade-in relative">
+      <div className="flex-1 overflow-y-auto overscroll-contain smooth-scroll space-y-3 pb-2 pr-1 tiny-scrollbar">
         {(() => {
           let lastDate = null;
           return messages.map(msg => {
@@ -90,7 +90,7 @@ const ChatTab = ({
                         : 'bg-white text-slate-800 rounded-tl-sm'
                   }`}>
                     {!isMe && <div className="text-[10px] font-bold opacity-80 mb-0.5 text-indigo-400">{getMemberName(msg.user_id)}</div>}
-                    <p className="text-[13px] leading-relaxed">{msg.text}</p>
+                    <p className="text-[13px] leading-relaxed break-words">{msg.text}</p>
                     <div className="flex items-end justify-between gap-2 mt-1">
                       <span className="text-[9px] opacity-60 ml-auto">{formatChatTime(msg.created_at)}</span>
                       {isMe && <i className={`fa-solid fa-check-double text-[9px] ${isTemp ? 'text-white/50' : 'text-blue-200'}`}></i>}
@@ -104,7 +104,7 @@ const ChatTab = ({
         <div ref={chatBottomRef}></div>
       </div>
       
-      <div className={`p-1.5 rounded-2xl border flex items-center gap-2 mt-2 shadow-sm ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
+      <div className={`flex-shrink-0 p-1.5 rounded-2xl border flex items-center gap-2 mt-2 shadow-sm ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
         <input 
           type="text" 
           placeholder="Message..." 
