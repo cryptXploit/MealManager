@@ -239,4 +239,3 @@ const SettingsTab = ({
 
 export default SettingsTab;
 
-export default SettingsTab;
