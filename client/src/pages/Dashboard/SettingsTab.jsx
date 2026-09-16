@@ -105,11 +105,11 @@ const SettingsTab = ({
 
   return (
     <>
-      <div className="fixed inset-0 z-50 flex md:items-center justify-center bg-slate-100/80 dark:bg-black/60 backdrop-blur-md fade-in transition-all duration-300" onClick={() => setShowSettings(false)}>
-        <div className={`w-full md:w-full md:max-w-lg h-full md:h-auto md:max-h-[85vh] md:rounded-3xl shadow-2xl flex flex-col slide-up overflow-hidden ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'} md:border`} onClick={e => e.stopPropagation()}>
+      <div className="fixed inset-0 z-50 flex md:items-center justify-center bg-slate-100 dark:bg-slate-900 md:bg-black/50 fade-in transition-all duration-300" onClick={() => setShowSettings(false)}>
+        <div className={`w-full md:w-full md:max-w-lg h-full md:h-auto md:max-h-[85vh] md:rounded-3xl shadow-2xl flex flex-col slide-up overflow-hidden ${darkMode ? 'bg-slate-900 md:border-slate-800' : 'bg-slate-50 md:border-slate-200'} md:border translate-z-0`} onClick={e => e.stopPropagation()}>
           
           {/* Header */}
-          <div className={`flex items-center justify-between px-4 py-4 md:px-6 md:py-5 border-b sticky top-0 z-10 backdrop-blur-xl ${darkMode ? 'border-slate-800 bg-slate-900/80' : 'border-slate-200 bg-slate-50/80'}`}>
+          <div className={`flex items-center justify-between px-4 py-4 md:px-6 md:py-5 border-b sticky top-0 z-10 ${darkMode ? 'border-slate-800 bg-slate-900' : 'border-slate-200 bg-slate-50'}`}>
             <h2 className="text-xl md:text-2xl font-bold tracking-tight">Settings</h2>
             <button onClick={() => setShowSettings(false)} className={`w-8 h-8 rounded-full flex items-center justify-center transition-all active:scale-90 ${darkMode ? 'bg-slate-800 text-slate-300' : 'bg-slate-200 text-slate-600'}`}>
               <i className="fa-solid fa-xmark"></i>
@@ -117,7 +117,7 @@ const SettingsTab = ({
           </div>
 
           {/* Scrollable Content */}
-          <div className="flex-1 overflow-y-auto overscroll-contain smooth-scroll p-4 md:p-6 pb-24 md:pb-6">
+          <div className="flex-1 overflow-y-auto overscroll-contain smooth-scroll p-4 md:p-6 pb-24 md:pb-6" style={{ WebkitOverflowScrolling: 'touch', transform: 'translateZ(0)' }}>
             
             {/* Group Info Card */}
             <div className={`p-5 rounded-3xl mb-6 shadow-sm border transition-all ${darkMode ? 'bg-indigo-900/20 border-indigo-500/30' : 'bg-white border-slate-100'}`}>
