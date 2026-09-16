@@ -189,17 +189,17 @@ const HomeTab = ({
               <i className="fa-solid fa-file-pdf text-sm"></i>
             </button>
           </div>
-          <div id="chart-container" className={`chart-container overflow-auto max-h-[65vh] ${darkMode ? 'bg-slate-900/50' : 'bg-slate-50/50'}`}>
+          <div id="chart-container" className={`chart-container overflow-auto tiny-scrollbar max-h-[70vh] ${darkMode ? 'bg-slate-900/50' : 'bg-slate-50/50'}`}>
             <table className="chart-table w-full">
               <thead>
                 <tr>
                   <th className={`sticky-corner ${darkMode ? 'sticky-corner-dark bg-slate-800 border-slate-700' : 'bg-slate-100 border-slate-200'}`}>#</th>
                   {sortedMembers.map(m => (
                     <th key={m.id} colSpan="2" className={`sticky-header ${darkMode ? 'sticky-header-dark bg-slate-800 border-slate-700' : 'bg-slate-100 border-slate-200'}`}>
-                      <div className={`truncate max-w-[70px] mx-auto text-[10px] font-bold uppercase px-1 py-1 ${m.id === profile?.id ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg' : ''}`}>
-                        {m.id === profile?.id ? 'YOU' : m.full_name.split(' ')[0].slice(0, 8)}
+                      <div className={`truncate max-w-[60px] mx-auto text-[8px] font-bold uppercase px-0.5 py-0.5 ${m.id === profile?.id ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-100 dark:bg-indigo-900/30 rounded-md' : ''}`}>
+                        {m.id === profile?.id ? 'YOU' : m.full_name.split(' ')[0].slice(0, 6)}
                       </div>
-                      <div className="flex justify-around border-t border-slate-400/30 mt-1 pt-1 opacity-80 text-[9px] font-bold">
+                      <div className="flex justify-around border-t border-slate-400/30 mt-0.5 pt-0.5 opacity-80 text-[8px] font-bold">
                         <span className="text-amber-500">D</span>
                         <span className="text-indigo-500">N</span>
                       </div>
@@ -212,26 +212,26 @@ const HomeTab = ({
                   const dateStr = `${currentDate.getFullYear()}-${String(currentDate.getMonth()+1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
                   return (
                     <tr key={day} className="transition-colors hover:bg-black/5 dark:hover:bg-white/5">
-                      <td className={`sticky-col font-bold text-xs ${darkMode ? 'sticky-col-dark bg-slate-800 border-slate-700 text-slate-300' : 'bg-white border-slate-200 text-slate-600'}`}>{day}</td>
-                      {sortedMembers.map(m => {
-                        const dMeal = mealLookup[`${m.id}_${dateStr}_D`];
-                        const nMeal = mealLookup[`${m.id}_${dateStr}_N`];
-                        const isDSelected = selectedCell === `${m.id}_${dateStr}_D`;
-                        const isNSelected = selectedCell === `${m.id}_${dateStr}_N`;
-                        return (
-                          <React.Fragment key={m.id}>
-                            <td 
-                              className={`chart-cell border cursor-pointer transition-all ${darkMode ? 'border-slate-700/50' : 'border-slate-200'} ${isDSelected ? 'bg-indigo-100 dark:bg-indigo-900/40 ring-1 ring-inset ring-indigo-500' : ''}`} 
-                              onClick={() => handleChartToggle(day, m, 'D')}
-                            >
-                              {dMeal ? (dMeal.count == 1 ? <i className="fa-solid fa-check text-emerald-500"></i> : <span className="font-bold text-indigo-600 dark:text-indigo-400">{dMeal.count}</span>) : ''}
-                            </td>
-                            <td 
-                              className={`chart-cell border cursor-pointer transition-all ${darkMode ? 'border-slate-700/50' : 'border-slate-200'} ${isNSelected ? 'bg-indigo-100 dark:bg-indigo-900/40 ring-1 ring-inset ring-indigo-500' : ''}`} 
-                              onClick={() => handleChartToggle(day, m, 'N')}
-                            >
-                              {nMeal ? (nMeal.count == 1 ? <i className="fa-solid fa-check text-emerald-500"></i> : <span className="font-bold text-indigo-600 dark:text-indigo-400">{nMeal.count}</span>) : ''}
-                            </td>
+                        <td className={`sticky-col font-bold text-[10px] ${darkMode ? 'sticky-col-dark bg-slate-800 border-slate-700 text-slate-300' : 'bg-white border-slate-200 text-slate-600'}`}>{day}</td>
+                        {sortedMembers.map(m => {
+                          const dMeal = mealLookup[`${m.id}_${dateStr}_D`];
+                          const nMeal = mealLookup[`${m.id}_${dateStr}_N`];
+                          const isDSelected = selectedCell === `${m.id}_${dateStr}_D`;
+                          const isNSelected = selectedCell === `${m.id}_${dateStr}_N`;
+                          return (
+                            <React.Fragment key={m.id}>
+                              <td 
+                                className={`chart-cell border cursor-pointer transition-all ${darkMode ? 'border-slate-700/50' : 'border-slate-200'} ${isDSelected ? 'bg-indigo-100 dark:bg-indigo-900/40 ring-1 ring-inset ring-indigo-500' : ''}`} 
+                                onClick={() => handleChartToggle(day, m, 'D')}
+                              >
+                                {dMeal ? (dMeal.count == 1 ? <i className="fa-solid fa-check text-emerald-500 text-[9px]"></i> : <span className="font-bold text-indigo-600 dark:text-indigo-400 text-[9px]">{dMeal.count}</span>) : ''}
+                              </td>
+                              <td 
+                                className={`chart-cell border cursor-pointer transition-all ${darkMode ? 'border-slate-700/50' : 'border-slate-200'} ${isNSelected ? 'bg-indigo-100 dark:bg-indigo-900/40 ring-1 ring-inset ring-indigo-500' : ''}`} 
+                                onClick={() => handleChartToggle(day, m, 'N')}
+                              >
+                                {nMeal ? (nMeal.count == 1 ? <i className="fa-solid fa-check text-emerald-500 text-[9px]"></i> : <span className="font-bold text-indigo-600 dark:text-indigo-400 text-[9px]">{nMeal.count}</span>) : ''}
+                              </td>
                           </React.Fragment>
                         )
                       })}
