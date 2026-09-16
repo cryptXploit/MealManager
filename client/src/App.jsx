@@ -66,6 +66,7 @@ function App() {
   }, []);
 
   const fetchProfileAndMess = async (user, overrideToken) => {
+    setLoading(true);
     const token = overrideToken || session?.access_token || localStorage.getItem('mm_token');
     let prof = null;
     try {
@@ -94,10 +95,24 @@ function App() {
     } else {
       setUiState('create_mess')
     }
+    setLoading(false);
   }
 
   if (loading) {
-    return <div className="h-screen flex items-center justify-center text-indigo-500 font-bold animate-pulse bg-white dark:bg-slate-900">Loading App...</div>
+    return (
+      <div className="h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-900 transition-colors duration-500 overflow-hidden relative">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-indigo-500/20 rounded-full blur-[60px] animate-pulse"></div>
+        <div className="relative z-10 flex flex-col items-center">
+          <div className="w-16 h-16 relative flex items-center justify-center mb-6">
+            <div className="absolute inset-0 border-4 border-indigo-200 dark:border-indigo-900/50 rounded-full"></div>
+            <div className="absolute inset-0 border-4 border-indigo-600 rounded-full border-t-transparent animate-spin"></div>
+            <i className="fa-solid fa-utensils text-indigo-600 dark:text-indigo-400 text-xl animate-pulse"></i>
+          </div>
+          <h2 className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent animate-pulse tracking-wide">Connecting to Backend...</h2>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 font-medium">Waking up servers (might take a moment)</p>
+        </div>
+      </div>
+    )
   }
 
   if (updatePasswordMode) {
