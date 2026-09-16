@@ -26,10 +26,14 @@ function App() {
   const [updatePasswordMode, setUpdatePasswordMode] = useState(false)
 
   useEffect(() => {
+    console.log("[App] useEffect mounted");
     const init = async () => {
+      console.log("[App] init called");
       const isRecovery = window.location.hash.includes('type=recovery');
       
-      const { data: { session: s } } = await supabase.auth.getSession();
+      console.log("[App] fetching session");
+      const { data: { session: s }, error: sessErr } = await supabase.auth.getSession();
+      console.log("[App] session fetched", { s, sessErr });
       
       if (isRecovery && !s) {
         alert("Reset link is expired or already used. Please request a new one.");
@@ -41,15 +45,19 @@ function App() {
         window.history.replaceState(null, null, ' ');
       } else if (s) {
         setSession(s);
+        console.log("[App] calling fetchProfileAndMess from init");
         await fetchProfileAndMess(s.user, s.access_token);
+        console.log("[App] finished fetchProfileAndMess from init");
       } else if (!profile) {
         setUiState('auth');
       }
+      console.log("[App] setting loading false in init");
       setLoading(false);
     }
     init();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, s) => {
+      console.log("[App] onAuthStateChange", event);
       setSession(s);
       if (event === 'PASSWORD_RECOVERY') {
         setUpdatePasswordMode(true);
@@ -59,37 +67,46 @@ function App() {
         setMessDetails(null);
         setUiState('auth');
       } else if (event === 'SIGNED_IN' && s && !updatePasswordMode) {
+        console.log("[App] calling fetchProfileAndMess from onAuthStateChange");
         await fetchProfileAndMess(s.user, s.access_token);
+        console.log("[App] finished fetchProfileAndMess from onAuthStateChange");
       }
     });
     return () => subscription.unsubscribe();
   }, []);
 
   const fetchProfileAndMess = async (user, overrideToken) => {
+    console.log("[App] fetchProfileAndMess started");
     setLoading(true);
     try {
       const token = overrideToken || session?.access_token || localStorage.getItem('mm_token');
       let prof = null;
       try {
+        console.log("[App] fetching /mess/me from backend");
         const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/mess/me`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
+        console.log("[App] fetch /mess/me completed", res.status);
         if (res.ok) {
           const json = await res.json();
           prof = json.profile;
         }
-      } catch(e) { console.error("Error fetching profile via API", e); }
+      } catch(e) { console.error("[App] Error fetching profile via API", e); }
 
+      console.log("[App] checking prof", prof);
       if (!prof) {
         const name = user.user_metadata?.full_name || (user.email ? user.email.split('@')[0] : 'User')
-        // We skip direct DB insert here because RLS blocks it (403). Backend handles it on mess creation/join.
         prof = { id: user.id, full_name: name, mess_id: null, email: user.email || '' }
       }
       
       setProfile(prof)
       updateCache(CACHE_KEYS.PROFILE, prof)
+      
+      console.log("[App] checking mess_id", prof.mess_id);
       if (prof.mess_id) {
+        console.log("[App] fetching mess details from supabase");
         const { data: mess } = await supabase.from('messes').select('*').eq('id', prof.mess_id).single()
+        console.log("[App] fetched mess details", mess);
         setMessDetails(mess)
         updateCache(CACHE_KEYS.MESS, mess)
         setUiState('dashboard')
@@ -97,9 +114,10 @@ function App() {
         setUiState('create_mess')
       }
     } catch (err) {
-      console.error("Fatal error in fetchProfileAndMess:", err);
+      console.error("[App] Fatal error in fetchProfileAndMess:", err);
       setUiState('create_mess');
     } finally {
+      console.log("[App] setting loading false in fetchProfileAndMess finally");
       setLoading(false);
     }
   }

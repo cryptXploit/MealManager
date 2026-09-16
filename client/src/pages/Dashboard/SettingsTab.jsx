@@ -105,85 +105,130 @@ const SettingsTab = ({
 
   return (
     <>
-      <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-sm fade-in" onClick={() => setShowSettings(false)}>
-        <div className={`w-full max-w-md rounded-t-3xl sm:rounded-2xl shadow-2xl slide-up overflow-hidden flex flex-col max-h-[90vh] ${darkMode ? 'bg-slate-900/90 backdrop-blur-xl border-t border-slate-700' : 'bg-white/90 backdrop-blur-xl'}`} onClick={e => e.stopPropagation()}>
-          <div className="w-full flex justify-center pt-3 pb-1"><div className="w-12 h-1.5 rounded-full bg-slate-300/50"></div></div>
-          <div className="p-6 overflow-y-auto no-scrollbar">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold flex items-center gap-2"><i className="fa-solid fa-users-gear text-indigo-500"></i> Group Settings</h2>
-              <button onClick={() => setShowSettings(false)} className="text-2xl opacity-50 hover:opacity-100 transition-opacity active:scale-90">&times;</button>
-            </div>
+      <div className="fixed inset-0 z-50 flex md:items-center justify-center bg-slate-100/80 dark:bg-black/60 backdrop-blur-md fade-in transition-all duration-300" onClick={() => setShowSettings(false)}>
+        <div className={`w-full md:w-full md:max-w-lg h-full md:h-auto md:max-h-[85vh] md:rounded-3xl shadow-2xl flex flex-col slide-up overflow-hidden ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'} md:border`} onClick={e => e.stopPropagation()}>
+          
+          {/* Header */}
+          <div className={`flex items-center justify-between px-4 py-4 md:px-6 md:py-5 border-b sticky top-0 z-10 backdrop-blur-xl ${darkMode ? 'border-slate-800 bg-slate-900/80' : 'border-slate-200 bg-slate-50/80'}`}>
+            <h2 className="text-xl md:text-2xl font-bold tracking-tight">Settings</h2>
+            <button onClick={() => setShowSettings(false)} className={`w-8 h-8 rounded-full flex items-center justify-center transition-all active:scale-90 ${darkMode ? 'bg-slate-800 text-slate-300' : 'bg-slate-200 text-slate-600'}`}>
+              <i className="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+
+          {/* Scrollable Content */}
+          <div className="flex-1 overflow-y-auto overscroll-contain smooth-scroll p-4 md:p-6 pb-24 md:pb-6">
             
-            <div className={`p-4 rounded-xl mb-6 backdrop-blur-md shadow-sm ${darkMode ? 'bg-slate-800/50' : 'bg-indigo-50/80'}`}>
-              <p className="text-xs font-bold uppercase opacity-50 mb-1">Invite Info</p>
-              <div className="flex justify-between items-center">
-                <div>
-                  <p className="text-sm font-bold">Group: {messDetails?.name}</p>
-                  <p className="text-sm font-mono opacity-80">PIN: {messDetails?.pin}</p>
+            {/* Group Info Card */}
+            <div className={`p-5 rounded-3xl mb-6 shadow-sm border transition-all ${darkMode ? 'bg-indigo-900/20 border-indigo-500/30' : 'bg-white border-slate-100'}`}>
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-2xl font-bold shadow-lg shadow-indigo-500/30">
+                  {messDetails?.name?.[0]?.toUpperCase()}
                 </div>
-                <button onClick={() => { navigator.clipboard.writeText(`Join Mess: ${messDetails?.name} | PIN: ${messDetails?.pin}`); showToast('Copied Info'); }} className="text-2xl text-indigo-500 hover:scale-110 active:scale-95 transition-transform"><i className="fa-solid fa-copy"></i></button>
+                <div>
+                  <h3 className="text-lg font-bold">{messDetails?.name}</h3>
+                  <p className="text-sm opacity-60">Meal Manager Group</p>
+                </div>
+              </div>
+              <div className={`flex justify-between items-center p-3 rounded-2xl ${darkMode ? 'bg-black/20' : 'bg-slate-50'}`}>
+                <div>
+                  <p className="text-xs uppercase font-bold opacity-50 mb-0.5">Invite PIN</p>
+                  <p className="font-mono font-bold tracking-widest text-indigo-500">{messDetails?.pin}</p>
+                </div>
+                <button onClick={() => { navigator.clipboard.writeText(`Join Mess: ${messDetails?.name} | PIN: ${messDetails?.pin}`); showToast('Copied to clipboard'); }} className="px-4 py-2 bg-indigo-500 text-white rounded-xl text-sm font-bold shadow-md hover:bg-indigo-600 active:scale-95 transition-all">Copy</button>
               </div>
             </div>
-            
-            <div className="mb-6">
-              <label className="text-xs font-bold uppercase opacity-50 mb-2 block">Add Member by Email</label>
-              <div className="flex gap-2">
-                <input type="email" placeholder="friend@gmail.com" className={`flex-1 p-3 rounded-xl border bg-transparent focus:ring-2 focus:ring-indigo-500 transition-all ${darkMode ? 'border-slate-700' : 'border-slate-300'}`} value={addMemberEmail} onChange={e => setAddMemberEmail(e.target.value)} />
-                <button onClick={handleAddMemberByEmail} className="px-5 py-3 bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white rounded-xl font-bold text-sm shadow-lg shadow-emerald-500/30 transition-all"><i className="fa-solid fa-user-plus"></i></button>
+
+            <p className="px-2 text-xs font-bold uppercase opacity-50 mb-2 mt-4">Group Management</p>
+            <div className={`rounded-3xl overflow-hidden shadow-sm border mb-6 ${darkMode ? 'bg-slate-800 border-slate-700/50' : 'bg-white border-slate-200/60'}`}>
+              
+              {/* Change PIN */}
+              <div className={`p-4 border-b flex flex-col sm:flex-row sm:items-center gap-3 ${darkMode ? 'border-slate-700/50' : 'border-slate-100'}`}>
+                <div className="flex items-center gap-3 w-full sm:w-1/2">
+                  <div className="w-8 h-8 rounded-xl bg-blue-500 text-white flex items-center justify-center shadow-sm"><i className="fa-solid fa-key"></i></div>
+                  <span className="font-medium">Change PIN</span>
+                </div>
+                <div className="flex gap-2 w-full sm:w-1/2">
+                  <input type="text" placeholder="New PIN" className={`flex-1 min-w-0 p-2 rounded-xl text-sm bg-transparent border focus:ring-2 focus:ring-blue-500 outline-none transition-all ${darkMode ? 'border-slate-600' : 'border-slate-200'}`} value={newPin} onChange={e => setNewPin(e.target.value)} />
+                  <button onClick={handleUpdatePin} className="px-4 bg-blue-500 text-white rounded-xl font-bold text-sm active:scale-95 transition-all">Save</button>
+                </div>
               </div>
-              <p className="text-[10px] opacity-50 mt-1">User must have signed up in this app first.</p>
-            </div>
-            
-            <div className="mb-6">
-              <label className="text-xs font-bold uppercase opacity-50 mb-2 block">Update PIN</label>
-              <div className="flex gap-2">
-                <input type="text" placeholder="New PIN" className={`flex-1 p-3 rounded-xl border bg-transparent focus:ring-2 focus:ring-indigo-500 transition-all ${darkMode ? 'border-slate-700' : 'border-slate-300'}`} value={newPin} onChange={e => setNewPin(e.target.value)} />
-                <button onClick={handleUpdatePin} className="px-5 py-3 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white rounded-xl font-bold text-sm shadow-lg shadow-indigo-600/30 transition-all">Update</button>
+
+              {/* Add Member */}
+              <div className={`p-4 border-b flex flex-col sm:flex-row sm:items-center gap-3 ${darkMode ? 'border-slate-700/50' : 'border-slate-100'}`}>
+                <div className="flex items-center gap-3 w-full sm:w-1/2">
+                  <div className="w-8 h-8 rounded-xl bg-emerald-500 text-white flex items-center justify-center shadow-sm"><i className="fa-solid fa-user-plus"></i></div>
+                  <span className="font-medium">Add Member</span>
+                </div>
+                <div className="flex gap-2 w-full sm:w-1/2">
+                  <input type="email" placeholder="Email" className={`flex-1 min-w-0 p-2 rounded-xl text-sm bg-transparent border focus:ring-2 focus:ring-emerald-500 outline-none transition-all ${darkMode ? 'border-slate-600' : 'border-slate-200'}`} value={addMemberEmail} onChange={e => setAddMemberEmail(e.target.value)} />
+                  <button onClick={handleAddMemberByEmail} className="px-4 bg-emerald-500 text-white rounded-xl font-bold text-sm active:scale-95 transition-all">Add</button>
+                </div>
               </div>
+
+              {/* Notifications */}
+              <button onClick={requestNotifyPermission} className="w-full p-4 flex items-center justify-between text-left active:bg-slate-500/10 transition-colors">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center shadow-sm"><i className="fa-solid fa-bell"></i></div>
+                  <span className="font-medium">Enable Notifications</span>
+                </div>
+                <i className="fa-solid fa-chevron-right opacity-30 text-sm"></i>
+              </button>
             </div>
-            
-            <div className="mb-6">
-              <label className="text-xs font-bold uppercase opacity-50 mb-2 block">Notifications</label>
-              <button onClick={requestNotifyPermission} className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30 transition-all"><i className="fa-solid fa-bell"></i> Enable System Notifications</button>
-            </div>
-            
-            <div className="mb-6">
-              <label className="text-xs font-bold uppercase opacity-50 mb-2 block">Members ({members.length})</label>
-              <div className={`max-h-48 overflow-y-auto rounded-xl border no-scrollbar backdrop-blur-md ${darkMode ? 'border-slate-700 bg-slate-800/40' : 'border-slate-200 bg-white/40'}`}>
-                {members.map(m => (
-                  <div key={m.id} className={`flex justify-between items-center p-3 border-b last:border-0 ${darkMode ? 'border-slate-700' : 'border-slate-100'}`}>
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center text-xs font-bold shadow-sm">{m.full_name[0]}</div>
-                      <div>
-                        <span className="text-sm font-bold block">{m.full_name} {m.id === session.user.id && '(You)'}</span>
-                        <span className="text-[10px] opacity-50">{m.email || 'No Email'}</span>
-                      </div>
+
+            <p className="px-2 text-xs font-bold uppercase opacity-50 mb-2 flex justify-between">
+              <span>Members</span>
+              <span>{members.length}</span>
+            </p>
+            <div className={`rounded-3xl overflow-hidden shadow-sm border mb-6 ${darkMode ? 'bg-slate-800 border-slate-700/50' : 'bg-white border-slate-200/60'}`}>
+              {members.map((m, idx) => (
+                <div key={m.id} className={`flex items-center justify-between p-3 sm:p-4 ${idx !== members.length - 1 ? (darkMode ? 'border-b border-slate-700/50' : 'border-b border-slate-100') : ''}`}>
+                  <div className="flex items-center gap-3 overflow-hidden">
+                    <div className="w-10 h-10 shrink-0 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 flex items-center justify-center text-sm font-bold shadow-inner">
+                      {m.full_name.substring(0, 2).toUpperCase()}
                     </div>
-                    {m.id !== session.user.id && (
-                      <button onClick={() => handleKickMember(m)} className="text-rose-500 hover:bg-rose-100 dark:hover:bg-rose-900/50 p-2 rounded-lg transition-all active:scale-90"><i className="fa-solid fa-user-minus"></i></button>
-                    )}
+                    <div className="min-w-0">
+                      <p className="font-bold text-sm truncate">{m.full_name} {m.id === session.user.id && <span className="text-indigo-500">(You)</span>}</p>
+                      <p className="text-xs opacity-50 truncate">{m.email || 'No email'}</p>
+                    </div>
                   </div>
-                ))}
-              </div>
+                  {m.id !== session.user.id && (
+                    <button onClick={() => handleKickMember(m)} className="shrink-0 ml-2 w-8 h-8 flex items-center justify-center text-rose-500 bg-rose-500/10 hover:bg-rose-500 hover:text-white rounded-full transition-colors active:scale-90">
+                      <i className="fa-solid fa-user-minus text-xs"></i>
+                    </button>
+                  )}
+                </div>
+              ))}
             </div>
-            
-            <div className={`mt-4 pt-6 border-t ${darkMode ? 'border-slate-800' : 'border-slate-200'}`}>
-              <label className="text-xs font-bold uppercase opacity-50 mb-3 flex items-center gap-2 text-rose-500"><i className="fa-solid fa-triangle-exclamation"></i> Danger Zone</label>
-              <button onClick={handleResetChart} className="w-full py-4 bg-rose-500/10 text-rose-600 hover:bg-rose-500 hover:text-white border border-rose-500/20 rounded-xl font-bold flex items-center justify-center gap-2 transition-all duration-200 active:scale-95"><i className="fa-solid fa-trash-can"></i> Reset Monthly Chart</button>
-              <p className="text-[10px] text-center mt-2 opacity-40">This will delete all meal entries for the current month.</p>
+
+            <p className="px-2 text-xs font-bold uppercase text-rose-500 opacity-80 mb-2 mt-8">Danger Zone</p>
+            <div className={`rounded-3xl overflow-hidden shadow-sm border ${darkMode ? 'bg-slate-800 border-slate-700/50' : 'bg-white border-slate-200/60'}`}>
+              <button onClick={handleResetChart} className="w-full p-4 flex items-center justify-between text-left active:bg-rose-500/10 transition-colors group">
+                <div className="flex items-center gap-3 text-rose-500">
+                  <div className="w-8 h-8 rounded-xl bg-rose-500/10 group-hover:bg-rose-500 group-hover:text-white flex items-center justify-center transition-colors"><i className="fa-solid fa-trash-can"></i></div>
+                  <div>
+                    <span className="font-bold block">Reset Monthly Chart</span>
+                    <span className="text-[10px] opacity-70">Delete all meal entries for this month</span>
+                  </div>
+                </div>
+                <i className="fa-solid fa-chevron-right text-rose-500 opacity-50 text-sm"></i>
+              </button>
             </div>
           </div>
         </div>
       </div>
 
       {confirmModal && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-md fade-in">
-          <div className={`w-full max-w-sm p-6 rounded-3xl shadow-2xl ${darkMode ? 'bg-slate-800/90 border border-slate-700' : 'bg-white/90 border border-slate-200'} backdrop-blur-xl scale-up`}>
-            <h3 className="text-lg font-bold mb-2">Confirm Action</h3>
-            <p className="opacity-70 mb-6">{confirmModal.message}</p>
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm fade-in">
+          <div className={`w-full max-w-sm p-6 rounded-3xl shadow-2xl ${darkMode ? 'bg-slate-800 border border-slate-700' : 'bg-white border border-slate-200'} scale-up`}>
+            <div className="w-12 h-12 rounded-full bg-rose-500/10 text-rose-500 flex items-center justify-center text-xl mb-4 mx-auto">
+              <i className="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3 className="text-lg font-bold text-center mb-2">Confirm Action</h3>
+            <p className="opacity-70 text-center text-sm mb-6">{confirmModal.message}</p>
             <div className="flex gap-3">
-              <button onClick={() => setConfirmModal(null)} className={`flex-1 py-3 rounded-xl font-bold transition-all active:scale-95 ${darkMode ? 'bg-slate-700 hover:bg-slate-600' : 'bg-slate-100 hover:bg-slate-200'}`}>{confirmModal.noLabel || 'Cancel'}</button>
-              <button onClick={confirmModal.onConfirm} className="flex-1 py-3 rounded-xl font-bold bg-rose-500 hover:bg-rose-600 text-white shadow-lg shadow-rose-500/30 transition-all active:scale-95">{confirmModal.yesLabel || 'Confirm'}</button>
+              <button onClick={() => setConfirmModal(null)} className={`flex-1 py-3 rounded-xl font-bold transition-all active:scale-95 ${darkMode ? 'bg-slate-700 text-slate-300' : 'bg-slate-100 text-slate-600'}`}>{confirmModal.noLabel || 'Cancel'}</button>
+              <button onClick={confirmModal.onConfirm} className="flex-1 py-3 rounded-xl font-bold bg-rose-500 text-white shadow-lg shadow-rose-500/30 transition-all active:scale-95">{confirmModal.yesLabel || 'Confirm'}</button>
             </div>
           </div>
         </div>
@@ -191,5 +236,7 @@ const SettingsTab = ({
     </>
   );
 };
+
+export default SettingsTab;
 
 export default SettingsTab;
