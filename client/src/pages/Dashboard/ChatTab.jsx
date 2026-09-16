@@ -65,7 +65,7 @@ const ChatTab = ({
 
   return (
     <div className="flex flex-col h-[calc(100vh-140px)] fade-in">
-      <div className="flex-1 overflow-y-auto space-y-3 pb-4 pr-1 no-scrollbar">
+      <div className="flex-1 overflow-y-auto overscroll-contain smooth-scroll space-y-3 pb-4 pr-1 no-scrollbar">
         {(() => {
           let lastDate = null;
           return messages.map(msg => {
@@ -77,20 +77,20 @@ const ChatTab = ({
             return (
               <React.Fragment key={msg.id}>
                 {showDate && (
-                  <div className="text-center text-[10px] opacity-40 my-3 font-bold uppercase tracking-wider backdrop-blur-sm inline-block mx-auto px-3 py-1 rounded-full bg-slate-200/50 dark:bg-slate-700/50">
+                  <div className="text-center text-[10px] opacity-40 my-3 font-bold uppercase tracking-wider inline-block mx-auto px-3 py-1 rounded-full bg-slate-200/50 dark:bg-slate-700/50">
                     {msgDate}
                   </div>
                 )}
                 <div className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}>
-                  <div className={`chat-bubble max-w-[80%] rounded-2xl p-3 shadow-md backdrop-blur-md transition-all ${
+                  <div className={`chat-bubble max-w-[80%] rounded-2xl p-2.5 shadow-sm transition-all ${
                     isMe 
                       ? 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-tr-sm' 
                       : darkMode 
-                        ? 'bg-slate-800/80 text-white rounded-tl-sm' 
-                        : 'bg-white/90 text-slate-800 rounded-tl-sm'
+                        ? 'bg-slate-800 text-white rounded-tl-sm' 
+                        : 'bg-white text-slate-800 rounded-tl-sm'
                   }`}>
-                    {!isMe && <div className="text-[10px] font-bold opacity-80 mb-1 text-indigo-400">{getMemberName(msg.user_id)}</div>}
-                    <p className="text-sm leading-relaxed">{msg.text}</p>
+                    {!isMe && <div className="text-[10px] font-bold opacity-80 mb-0.5 text-indigo-400">{getMemberName(msg.user_id)}</div>}
+                    <p className="text-[13px] leading-relaxed">{msg.text}</p>
                     <div className="flex items-end justify-between gap-2 mt-1">
                       <span className="text-[9px] opacity-60 ml-auto">{formatChatTime(msg.created_at)}</span>
                       {isMe && <i className={`fa-solid fa-check-double text-[9px] ${isTemp ? 'text-white/50' : 'text-blue-200'}`}></i>}
@@ -104,11 +104,11 @@ const ChatTab = ({
         <div ref={chatBottomRef}></div>
       </div>
       
-      <div className={`p-2 rounded-2xl border flex items-center gap-2 mt-2 backdrop-blur-xl shadow-lg ${darkMode ? 'bg-slate-800/90 border-slate-700' : 'bg-white/90 border-slate-200'}`}>
+      <div className={`p-1.5 rounded-2xl border flex items-center gap-2 mt-2 shadow-sm ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
         <input 
           type="text" 
-          placeholder="Type a message..." 
-          className="flex-1 bg-transparent p-2 outline-none text-sm px-4" 
+          placeholder="Message..." 
+          className="flex-1 bg-transparent p-2 outline-none text-sm px-3" 
           ref={chatInputRef} 
           defaultValue={chatInput} 
           onChange={e => setChatInput(e.target.value)}
@@ -116,9 +116,9 @@ const ChatTab = ({
         />
         <button 
           onClick={sendMessage} 
-          className="w-10 h-10 flex items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white hover:scale-105 active:scale-95 transition-all shadow-md shadow-indigo-500/30"
+          className="w-9 h-9 flex items-center justify-center rounded-xl bg-indigo-500 text-white active:scale-95 transition-all shadow-sm shadow-indigo-500/30"
         >
-          <i className="fa-solid fa-paper-plane"></i>
+          <i className="fa-solid fa-paper-plane text-xs"></i>
         </button>
       </div>
     </div>

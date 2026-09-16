@@ -62,27 +62,27 @@ const MealTab = ({
   };
 
   return (
-    <div className="fade-in pb-8">
-      <div className={`p-6 rounded-3xl border text-center mb-6 backdrop-blur-xl shadow-lg ${darkMode ? 'bg-slate-800/80 border-slate-700' : 'bg-white/80 border-slate-200'}`}>
-        <h2 className="text-xl font-bold mb-5 flex items-center justify-center gap-2">
+    <div className="fade-in pb-4">
+      <div className={`p-4 rounded-3xl border mb-4 shadow-sm ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
+        <h2 className="text-lg font-bold mb-4 flex items-center justify-center gap-2">
           <i className="fa-solid fa-utensils text-emerald-500"></i> Log Manual Meals
         </h2>
         
-        <div className="flex gap-3 mb-4">
+        <div className="flex gap-2 mb-3">
           <div className="flex-1">
-            <label className="text-xs font-bold uppercase opacity-60 mb-2 block tracking-wider text-left">Date</label>
+            <label className="text-[10px] font-bold uppercase opacity-60 mb-1 block tracking-wider text-left">Date</label>
             <input 
               type="date" 
-              className={`w-full p-4 rounded-xl border bg-transparent focus:ring-2 focus:ring-emerald-500 transition-all ${darkMode ? 'border-slate-600' : 'border-slate-300'}`} 
+              className={`w-full p-2.5 rounded-xl text-sm border bg-transparent focus:ring-2 focus:ring-emerald-500 transition-all ${darkMode ? 'border-slate-700' : 'border-slate-200'}`} 
               value={mealInput.date} 
               onChange={e => setMealInput({...mealInput, date: e.target.value})} 
             />
           </div>
           <div className="w-1/3">
-            <label className="text-xs font-bold uppercase opacity-60 mb-2 block tracking-wider text-left">Type</label>
+            <label className="text-[10px] font-bold uppercase opacity-60 mb-1 block tracking-wider text-left">Type</label>
             <div className="relative">
               <select 
-                className={`w-full p-4 rounded-xl border bg-transparent outline-none font-bold appearance-none focus:ring-2 focus:ring-emerald-500 transition-all ${darkMode ? 'border-slate-600 bg-slate-800/50' : 'border-slate-300 bg-white/50'}`} 
+                className={`w-full p-2.5 rounded-xl text-sm border bg-transparent outline-none font-bold appearance-none focus:ring-2 focus:ring-emerald-500 transition-all ${darkMode ? 'border-slate-700 bg-slate-800' : 'border-slate-200 bg-white'}`} 
                 value={mealInput.type} 
                 onChange={e => setMealInput({...mealInput, type: e.target.value})}
               >
@@ -96,13 +96,13 @@ const MealTab = ({
           </div>
         </div>
         
-        <div className="mb-6">
-          <label className="text-xs font-bold uppercase opacity-60 mb-2 block tracking-wider text-left">Meal Count</label>
+        <div className="mb-4">
+          <label className="text-[10px] font-bold uppercase opacity-60 mb-1 block tracking-wider text-left">Meal Count</label>
           <input 
             type="number" 
             placeholder="e.g. 1 or 0.5" 
             step="0.5" 
-            className={`w-full p-4 text-center rounded-xl border bg-transparent font-bold text-xl focus:ring-2 focus:ring-emerald-500 transition-all ${darkMode ? 'border-slate-600' : 'border-slate-300'}`} 
+            className={`w-full p-2.5 text-center rounded-xl text-sm border bg-transparent font-bold focus:ring-2 focus:ring-emerald-500 transition-all ${darkMode ? 'border-slate-700' : 'border-slate-200'}`} 
             value={mealInput.count} 
             onChange={e => setMealInput({...mealInput, count: e.target.value})} 
           />
@@ -110,44 +110,45 @@ const MealTab = ({
         
         <button 
           onClick={addMeal} 
-          className="w-full bg-gradient-to-r from-emerald-400 to-teal-500 hover:from-emerald-500 hover:to-teal-600 active:scale-95 text-white py-4 rounded-xl font-bold shadow-lg shadow-emerald-500/30 transition-all flex items-center justify-center gap-2"
+          className="w-full bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2"
         >
           <i className="fa-solid fa-check"></i> Confirm Meal
         </button>
       </div>
       
-      <div className="space-y-3">
-        <h3 className="text-sm font-bold opacity-70 px-2 uppercase tracking-wider">Recent Meals</h3>
+      <div className={`rounded-3xl border overflow-hidden shadow-sm ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
+        <h3 className={`text-[10px] font-bold opacity-60 uppercase tracking-wider p-3 border-b ${darkMode ? 'border-slate-700' : 'border-slate-100'}`}>Recent Meals</h3>
         {filteredMeals.filter(m => m.user_id === session.user.id).length === 0 && (
-          <div className="text-center opacity-50 py-4 text-sm">No meals logged for you this month.</div>
+          <div className="text-center opacity-50 py-4 text-xs">No meals logged for you this month.</div>
         )}
-        {filteredMeals.filter(m => m.user_id === session.user.id).slice(0, 10).map((m, i) => (
-          <div 
-            key={m.id} 
-            className={`flex justify-between items-center p-4 rounded-2xl border backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-md ${darkMode ? 'bg-slate-800/60 border-slate-700' : 'bg-white/60 border-slate-200'}`}
-            style={{ animationDelay: `${i * 0.05}s` }}
-          >
-            <div className="flex items-center gap-4">
-              <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${m.meal_type === 'D' ? 'bg-amber-100 text-amber-500 dark:bg-amber-900/30 dark:text-amber-400' : 'bg-indigo-100 text-indigo-500 dark:bg-indigo-900/30 dark:text-indigo-400'}`}>
-                <i className={`fa-solid ${m.meal_type === 'D' ? 'fa-sun' : 'fa-moon'}`}></i>
+        <div className="divide-y dark:divide-slate-700 divide-slate-100">
+          {filteredMeals.filter(m => m.user_id === session.user.id).slice(0, 10).map((m, i) => (
+            <div 
+              key={m.id} 
+              className={`flex justify-between items-center p-3 transition-colors hover:bg-black/5 dark:hover:bg-white/5`}
+            >
+              <div className="flex items-center gap-3">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${m.meal_type === 'D' ? 'bg-amber-100 text-amber-500 dark:bg-amber-900/30 dark:text-amber-400' : 'bg-indigo-100 text-indigo-500 dark:bg-indigo-900/30 dark:text-indigo-400'}`}>
+                  <i className={`fa-solid ${m.meal_type === 'D' ? 'fa-sun text-xs' : 'fa-moon text-xs'}`}></i>
+                </div>
+                <div>
+                  <span className="font-bold block text-xs">{m.date}</span>
+                  <span className="text-[9px] opacity-60 uppercase tracking-wider">{m.meal_type === 'D' ? 'Day' : 'Night'} Meal</span>
+                </div>
               </div>
-              <div>
-                <span className="font-bold block text-sm">{m.date}</span>
-                <span className="text-[10px] opacity-60 uppercase tracking-wider">{m.meal_type === 'D' ? 'Day' : 'Night'} Meal</span>
+              
+              <div className="flex items-center gap-3">
+                <span className="font-bold text-sm">{m.count}</span>
+                <button 
+                  onClick={() => deleteItem('meals', m.id, m.user_id, `Meal: ${m.count}`)} 
+                  className="text-rose-500 bg-rose-500/10 w-7 h-7 flex items-center justify-center rounded-full hover:bg-rose-500 hover:text-white transition-colors active:scale-90"
+                >
+                  <i className="fa-solid fa-trash-can text-[10px]"></i>
+                </button>
               </div>
             </div>
-            
-            <div className="flex items-center gap-4">
-              <span className="font-bold text-lg">{m.count}</span>
-              <button 
-                onClick={() => deleteItem('meals', m.id, m.user_id, `Meal: ${m.count}`)} 
-                className="text-rose-400 p-2 rounded-lg hover:bg-rose-100 dark:hover:bg-rose-900/30 transition-colors active:scale-90"
-              >
-                <i className="fa-solid fa-trash"></i>
-              </button>
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );
