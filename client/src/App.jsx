@@ -67,35 +67,41 @@ function App() {
 
   const fetchProfileAndMess = async (user, overrideToken) => {
     setLoading(true);
-    const token = overrideToken || session?.access_token || localStorage.getItem('mm_token');
-    let prof = null;
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/mess/me`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      if (res.ok) {
-        const json = await res.json();
-        prof = json.profile;
-      }
-    } catch(e) { console.error("Error fetching profile via API", e); }
+      const token = overrideToken || session?.access_token || localStorage.getItem('mm_token');
+      let prof = null;
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/mess/me`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+          const json = await res.json();
+          prof = json.profile;
+        }
+      } catch(e) { console.error("Error fetching profile via API", e); }
 
-    if (!prof) {
-      const name = user.user_metadata?.full_name || user.email.split('@')[0]
-      // We skip direct DB insert here because RLS blocks it (403). Backend handles it on mess creation/join.
-      prof = { id: user.id, full_name: name, mess_id: null, email: user.email }
+      if (!prof) {
+        const name = user.user_metadata?.full_name || (user.email ? user.email.split('@')[0] : 'User')
+        // We skip direct DB insert here because RLS blocks it (403). Backend handles it on mess creation/join.
+        prof = { id: user.id, full_name: name, mess_id: null, email: user.email || '' }
+      }
+      
+      setProfile(prof)
+      updateCache(CACHE_KEYS.PROFILE, prof)
+      if (prof.mess_id) {
+        const { data: mess } = await supabase.from('messes').select('*').eq('id', prof.mess_id).single()
+        setMessDetails(mess)
+        updateCache(CACHE_KEYS.MESS, mess)
+        setUiState('dashboard')
+      } else {
+        setUiState('create_mess')
+      }
+    } catch (err) {
+      console.error("Fatal error in fetchProfileAndMess:", err);
+      setUiState('create_mess');
+    } finally {
+      setLoading(false);
     }
-    
-    setProfile(prof)
-    updateCache(CACHE_KEYS.PROFILE, prof)
-    if (prof.mess_id) {
-      const { data: mess } = await supabase.from('messes').select('*').eq('id', prof.mess_id).single()
-      setMessDetails(mess)
-      updateCache(CACHE_KEYS.MESS, mess)
-      setUiState('dashboard')
-    } else {
-      setUiState('create_mess')
-    }
-    setLoading(false);
   }
 
   if (loading) {
