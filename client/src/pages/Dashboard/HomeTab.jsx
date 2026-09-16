@@ -42,21 +42,21 @@ const TimeAwareHero = ({ name, monthName, amount, darkMode }) => {
   };
 
   return (
-    <div className={`mb-6 relative overflow-hidden rounded-3xl shadow-2xl p-6 text-white transition-all duration-1000 hover:-translate-y-1 ${getBgClass()}`} style={{ backgroundSize: '200% 200%', animation: 'gradientShift 8s ease infinite' }}>
+    <div className={`mb-3 relative overflow-hidden rounded-2xl shadow-lg p-4 text-white transition-all duration-1000 ${getBgClass()}`} style={{ backgroundSize: '200% 200%', animation: 'gradientShift 8s ease infinite' }}>
       <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-40">{renderEffects()}</div>
       <div className="relative z-10">
-        <div className="flex justify-between items-start mb-4">
+        <div className="flex justify-between items-start mb-2">
           <div>
-            <p className="text-xs font-bold opacity-80 uppercase tracking-widest mb-1 shadow-black drop-shadow-md">{monthName}</p>
+            <p className="text-[10px] font-bold opacity-80 uppercase tracking-widest mb-0.5 shadow-black drop-shadow-md">{monthName}</p>
             <AnimatedGreeting text={`${timeData.text}, ${name}!`} />
           </div>
-          <div className="bg-white/20 p-2.5 rounded-xl backdrop-blur-md border border-white/30 shadow-lg animate-pulse">
-            <i className={`fa-solid ${timeData.type === 'night' ? 'fa-moon' : timeData.type === 'noon' ? 'fa-sun' : 'fa-bowl-food'} text-xl`}></i>
+          <div className="bg-white/20 p-2 rounded-xl backdrop-blur-md border border-white/30 shadow-lg animate-pulse">
+            <i className={`fa-solid ${timeData.type === 'night' ? 'fa-moon' : timeData.type === 'noon' ? 'fa-sun' : 'fa-bowl-food'} text-lg`}></i>
           </div>
         </div>
-        <div className="mt-6">
-          <p className="text-xs font-bold opacity-80 uppercase mb-1 drop-shadow-md">Current Meal Rate</p>
-          <h2 className="text-5xl font-black tracking-tighter drop-shadow-lg">{amount}</h2>
+        <div className="mt-2">
+          <p className="text-[10px] font-bold opacity-80 uppercase mb-0.5 drop-shadow-md">Current Meal Rate</p>
+          <h2 className="text-3xl font-black tracking-tighter drop-shadow-lg">{amount}</h2>
         </div>
       </div>
     </div>
@@ -91,18 +91,18 @@ const HomeTab = ({
   };
 
   return (
-    <div className="fade-in pb-8">
+    <div className="fade-in pb-4">
       {/* Tab Switcher for Home */}
-      <div className={`flex p-1 mb-6 rounded-2xl border backdrop-blur-md shadow-sm ${darkMode ? 'bg-slate-800/80 border-slate-700' : 'bg-slate-100/80 border-slate-200'}`}>
+      <div className={`flex p-1 mb-3 rounded-xl border backdrop-blur-md shadow-sm ${darkMode ? 'bg-slate-800/80 border-slate-700' : 'bg-slate-100/80 border-slate-200'}`}>
         <button 
           onClick={() => setView('overview')} 
-          className={`flex-1 py-2 text-sm font-bold rounded-xl transition-all ${view === 'overview' ? 'bg-white dark:bg-slate-700 shadow-md text-indigo-600 dark:text-indigo-400' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}
+          className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all ${view === 'overview' ? 'bg-white dark:bg-slate-700 shadow-md text-indigo-600 dark:text-indigo-400' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}
         >
           Overview
         </button>
         <button 
           onClick={() => setView('chart')} 
-          className={`flex-1 py-2 text-sm font-bold rounded-xl transition-all ${view === 'chart' ? 'bg-white dark:bg-slate-700 shadow-md text-indigo-600 dark:text-indigo-400' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}
+          className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all ${view === 'chart' ? 'bg-white dark:bg-slate-700 shadow-md text-indigo-600 dark:text-indigo-400' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}
         >
           Monthly Chart
         </button>
@@ -117,50 +117,50 @@ const HomeTab = ({
             darkMode={darkMode} 
           />
           
-          <div className="grid grid-cols-2 gap-4 mb-6">
-            <div className={`p-5 rounded-3xl border backdrop-blur-xl transition-all hover:-translate-y-1 hover:shadow-lg ${darkMode ? 'bg-slate-800/80 border-slate-700' : 'bg-white/80 border-slate-200 shadow-sm'}`}>
-              <div className="flex justify-between items-start mb-2">
-                <p className="text-[10px] font-bold uppercase opacity-60 text-indigo-500">Total Cost</p>
-                <i className="fa-solid fa-wallet text-indigo-400/50"></i>
+          <div className="grid grid-cols-2 gap-3 mb-3">
+            <div className={`p-3 rounded-2xl border backdrop-blur-xl transition-all ${darkMode ? 'bg-slate-800/80 border-slate-700' : 'bg-white/80 border-slate-200 shadow-sm'}`}>
+              <div className="flex justify-between items-start mb-1">
+                <p className="text-[9px] font-bold uppercase opacity-60 text-indigo-500">Total Cost</p>
+                <i className="fa-solid fa-wallet text-indigo-400/50 text-xs"></i>
               </div>
-              <h2 className="text-2xl font-black">{formatMoney(stats.totalCost)}</h2>
+              <h2 className="text-xl font-black">{formatMoney(stats.totalCost)}</h2>
             </div>
-            <div className={`p-5 rounded-3xl border backdrop-blur-xl transition-all hover:-translate-y-1 hover:shadow-lg ${darkMode ? 'bg-slate-800/80 border-slate-700' : 'bg-white/80 border-slate-200 shadow-sm'}`}>
-              <div className="flex justify-between items-start mb-2">
-                <p className="text-[10px] font-bold uppercase opacity-60 text-emerald-500">Total Meals</p>
-                <i className="fa-solid fa-plate-wheat text-emerald-400/50"></i>
+            <div className={`p-3 rounded-2xl border backdrop-blur-xl transition-all ${darkMode ? 'bg-slate-800/80 border-slate-700' : 'bg-white/80 border-slate-200 shadow-sm'}`}>
+              <div className="flex justify-between items-start mb-1">
+                <p className="text-[9px] font-bold uppercase opacity-60 text-emerald-500">Total Meals</p>
+                <i className="fa-solid fa-plate-wheat text-emerald-400/50 text-xs"></i>
               </div>
-              <h2 className="text-2xl font-black">{stats.totalMeals}</h2>
+              <h2 className="text-xl font-black">{stats.totalMeals}</h2>
             </div>
           </div>
           
-          <div className={`rounded-3xl border overflow-hidden backdrop-blur-xl shadow-lg ${darkMode ? 'bg-slate-800/80 border-slate-700' : 'bg-white/80 border-slate-200'}`}>
-            <div className={`p-4 border-b flex justify-between items-center ${darkMode ? 'border-slate-700' : 'border-slate-100'}`}>
-              <h3 className="font-bold text-sm flex items-center gap-2"><i className="fa-solid fa-users text-indigo-500"></i> Member Status</h3>
-              <span className={`text-[10px] opacity-70 px-3 py-1 rounded-full font-bold ${darkMode ? 'bg-slate-700 text-slate-300' : 'bg-slate-100 text-slate-600'}`}>{monthName}</span>
+          <div className={`rounded-2xl border overflow-hidden backdrop-blur-xl shadow-lg ${darkMode ? 'bg-slate-800/80 border-slate-700' : 'bg-white/80 border-slate-200'}`}>
+            <div className={`p-3 border-b flex justify-between items-center ${darkMode ? 'border-slate-700' : 'border-slate-100'}`}>
+              <h3 className="font-bold text-xs flex items-center gap-2"><i className="fa-solid fa-users text-indigo-500"></i> Member Status</h3>
+              <span className={`text-[9px] opacity-70 px-2 py-0.5 rounded-full font-bold ${darkMode ? 'bg-slate-700 text-slate-300' : 'bg-slate-100 text-slate-600'}`}>{monthName}</span>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-xs">
                 <thead className={`uppercase text-left tracking-wider ${darkMode ? 'bg-slate-900/50 opacity-80' : 'bg-slate-50 text-slate-500'}`}>
                   <tr>
-                    <th className="px-5 py-4">User</th>
-                    <th className="px-2 py-4 text-center">Meal</th>
-                    <th className="px-2 py-4 text-right">Dep.</th>
-                    <th className="px-5 py-4 text-right">Bal.</th>
+                    <th className="px-3 py-2 text-[10px]">User</th>
+                    <th className="px-1 py-2 text-center text-[10px]">Meal</th>
+                    <th className="px-1 py-2 text-right text-[10px]">Dep.</th>
+                    <th className="px-3 py-2 text-right text-[10px]">Bal.</th>
                   </tr>
                 </thead>
                 <tbody className={darkMode ? 'divide-y divide-slate-700' : 'divide-y divide-slate-100'}>
                   {stats.report.map(m => (
                     <tr key={m.id} className="transition-colors hover:bg-black/5 dark:hover:bg-white/5">
-                      <td className="px-5 py-4 font-bold flex items-center gap-2">
-                        <div className="w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-[10px] shrink-0">
+                      <td className="px-3 py-2 font-bold flex items-center gap-2">
+                        <div className="w-5 h-5 rounded-full bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-[9px] shrink-0">
                           {m.full_name[0]}
                         </div>
-                        <span className="truncate max-w-[60px]">{m.full_name.split(' ')[0]}</span>
+                        <span className="truncate max-w-[60px] text-[11px]">{m.full_name.split(' ')[0]}</span>
                       </td>
-                      <td className="px-2 py-4 text-center font-medium">{m.totalMeals}</td>
-                      <td className="px-2 py-4 text-right font-medium text-slate-500 dark:text-slate-400">{Math.round(m.deposit)}</td>
-                      <td className={`px-5 py-4 text-right font-bold text-sm ${m.balance >= 0 ? 'text-emerald-500' : 'text-rose-500'}`}>
+                      <td className="px-1 py-2 text-center font-medium text-[11px]">{m.totalMeals}</td>
+                      <td className="px-1 py-2 text-right font-medium text-slate-500 dark:text-slate-400 text-[11px]">{Math.round(m.deposit)}</td>
+                      <td className={`px-3 py-2 text-right font-bold text-xs ${m.balance >= 0 ? 'text-emerald-500' : 'text-rose-500'}`}>
                         {m.balance > 0 ? '+' : ''}{Math.round(m.balance)}
                       </td>
                     </tr>
@@ -173,23 +173,23 @@ const HomeTab = ({
       )}
 
       {view === 'chart' && (
-        <div className={`fade-in rounded-3xl shadow-xl border overflow-hidden flex flex-col backdrop-blur-xl ${darkMode ? 'bg-slate-800/90 border-slate-700' : 'bg-white/90 border-slate-200'}`}>
-          <div className="p-4 border-b dark:border-slate-700 flex justify-between items-center bg-gradient-to-r from-purple-700 to-indigo-800 text-white shadow-inner">
+        <div className={`fade-in rounded-2xl shadow-xl border overflow-hidden flex flex-col backdrop-blur-xl ${darkMode ? 'bg-slate-800/90 border-slate-700' : 'bg-white/90 border-slate-200'}`}>
+          <div className="p-2 px-3 border-b dark:border-slate-700 flex justify-between items-center bg-gradient-to-r from-purple-700 to-indigo-800 text-white shadow-inner">
             <input 
               type="month" 
               value={`${currentDate.getFullYear()}-${String(currentDate.getMonth()+1).padStart(2,'0')}`} 
               onChange={handleMonthChange} 
-              className="bg-white/20 backdrop-blur-md text-white font-bold text-sm outline-none border border-white/30 rounded-xl px-3 py-2 max-w-[150px] focus:ring-2 focus:ring-white/50 transition-all cursor-pointer" 
+              className="bg-white/20 backdrop-blur-md text-white font-bold text-xs outline-none border border-white/30 rounded-lg px-2 py-1 max-w-[130px] focus:ring-2 focus:ring-white/50 transition-all cursor-pointer" 
             />
             <button 
               onClick={downloadChartPDF} 
-              className="w-10 h-10 flex items-center justify-center rounded-xl bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 hover:bg-emerald-500 hover:text-white transition-all active:scale-95 hover:shadow-lg shadow-emerald-500/20" 
+              className="w-8 h-8 flex items-center justify-center rounded-lg bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 hover:bg-emerald-500 hover:text-white transition-all active:scale-95 hover:shadow-lg shadow-emerald-500/20" 
               title="Download PDF"
             >
-              <i className="fa-solid fa-file-pdf"></i>
+              <i className="fa-solid fa-file-pdf text-sm"></i>
             </button>
           </div>
-          <div id="chart-container" className={`chart-container overflow-auto max-h-[60vh] ${darkMode ? 'bg-slate-900/50' : 'bg-slate-50/50'}`}>
+          <div id="chart-container" className={`chart-container overflow-auto max-h-[65vh] ${darkMode ? 'bg-slate-900/50' : 'bg-slate-50/50'}`}>
             <table className="chart-table w-full">
               <thead>
                 <tr>
