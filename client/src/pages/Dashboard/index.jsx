@@ -42,19 +42,20 @@ const Dashboard = ({ profile, setProfile, messDetails, setMessDetails, session }
   const fetchAllDataCallback = useCallback(async () => {
     const messId = profileRef.current?.mess_id;
     if (!messId || !isOnline) return;
-    try {
-      // Replaced old fetch with new modularized apiClient call
-      const response = await apiClient.get(`/home/data/${messId}`);
-      const data = response.data;
-      
-      if (data.members) { setMembers(data.members); updateCache(CACHE_KEYS.MEMBERS, data.members); }
-      if (data.expenses) { setExpenses(data.expenses); updateCache(CACHE_KEYS.EXPENSES, data.expenses); }
-      if (data.meals) { setMeals(data.meals); updateCache(CACHE_KEYS.MEALS, data.meals); }
-      if (data.logs) { setLogs(data.logs); updateCache(CACHE_KEYS.LOGS, data.logs); }
-      if (data.messages) { setMessages(data.messages); updateCache(CACHE_KEYS.MESSAGES, data.messages); }
-      
-      setConnStatus('connected');
-    } catch (e) {
+      try {
+        // Replaced old fetch with new modularized apiClient call
+        const response = await apiClient.get(`/home/data/${messId}`);
+        const data = response.data;
+        
+        if (data.members) { setMembers(data.members); updateCache(CACHE_KEYS.MEMBERS, data.members); }
+        if (data.expenses) { setExpenses(data.expenses); updateCache(CACHE_KEYS.EXPENSES, data.expenses); }
+        if (data.meals) { setMeals(data.meals); updateCache(CACHE_KEYS.MEALS, data.meals); }
+        if (data.logs) { setLogs(data.logs); updateCache(CACHE_KEYS.LOGS, data.logs); }
+        if (data.messages) { setMessages(data.messages); updateCache(CACHE_KEYS.MESSAGES, data.messages); }
+        if (data.mess) { setMessDetails(data.mess); updateCache(CACHE_KEYS.MESS, data.mess); }
+        
+        setConnStatus('connected');
+      } catch (e) {
       console.error('Fetch error:', e);
       setConnStatus('disconnected');
     }

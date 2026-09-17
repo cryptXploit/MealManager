@@ -130,13 +130,18 @@ const SettingsTab = ({
                   <p className="text-sm opacity-60">Meal Manager Group</p>
                 </div>
               </div>
-              <div className={`flex justify-between items-center p-3 rounded-2xl ${darkMode ? 'bg-black/20' : 'bg-slate-50'}`}>
-                <div>
-                  <p className="text-xs uppercase font-bold opacity-50 mb-0.5">Invite PIN</p>
-                  <p className="font-mono font-bold tracking-widest text-indigo-500">{messDetails?.pin}</p>
+                <div className={`flex justify-between items-center p-3 rounded-2xl ${darkMode ? 'bg-black/20' : 'bg-slate-50'}`}>
+                  <div>
+                    <p className="text-xs uppercase font-bold opacity-50 mb-0.5">Invite PIN</p>
+                    <p className="font-mono font-bold tracking-widest text-indigo-500">{messDetails?.pin || 'N/A'}</p>
+                  </div>
+                  <button onClick={() => { 
+                    const mName = messDetails?.name || 'Mess';
+                    const mPin = messDetails?.pin || 'N/A';
+                    navigator.clipboard.writeText(`Join Mess: ${mName} | PIN: ${mPin}`); 
+                    showToast('Copied to clipboard'); 
+                  }} className="px-4 py-2 bg-indigo-500 text-white rounded-xl text-sm font-bold shadow-md hover:bg-indigo-600 active:scale-95 transition-all">Copy</button>
                 </div>
-                <button onClick={() => { navigator.clipboard.writeText(`Join Mess: ${messDetails?.name} | PIN: ${messDetails?.pin}`); showToast('Copied to clipboard'); }} className="px-4 py-2 bg-indigo-500 text-white rounded-xl text-sm font-bold shadow-md hover:bg-indigo-600 active:scale-95 transition-all">Copy</button>
-              </div>
             </div>
 
             <p className="px-2 text-xs font-bold uppercase opacity-50 mb-2 mt-4">Group Management</p>
