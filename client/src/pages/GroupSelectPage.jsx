@@ -11,7 +11,7 @@ const GroupSelectPage = ({ messDetails, setUiState }) => {
   }
 
   return (
-    <div className={`min-h-screen flex flex-col items-center justify-center p-6 ${darkMode ? 'app-dark' : 'app-light bg-white'}`}>
+    <div className={`min-h-screen pt-safe pb-safe flex flex-col items-center justify-center p-6 ${darkMode ? 'app-dark' : 'app-light bg-white'}`}>
       <div className={`w-full max-w-md p-8 rounded-3xl shadow-2xl border text-center ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-100'}`}>
         <div className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl text-indigo-600 ${darkMode ? 'bg-indigo-900/30' : 'bg-indigo-50'}`}>
           <i className="fa-solid fa-house-user"></i>

@@ -275,7 +275,7 @@ const Dashboard = ({ profile, setProfile, messDetails, setMessDetails, session }
   };
 
   return (
-    <div className={`flex flex-col h-[100dvh] w-full transition-colors duration-300 overflow-hidden ${darkMode ? 'app-dark bg-slate-900' : 'app-light bg-slate-50'}`}>
+    <div className={`flex flex-col h-[100dvh] w-full pt-safe transition-colors duration-300 overflow-hidden ${darkMode ? 'app-dark bg-slate-900' : 'app-light bg-slate-50'}`}>
       
       {/* Notifications */}
       {notification && (

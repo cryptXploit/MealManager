@@ -57,7 +57,7 @@ const AuthPage = ({ setSession, setProfile, setUiState }) => {
   }
 
   return (
-    <div className={`min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 transition-colors duration-500 overflow-hidden relative ${darkMode ? 'bg-slate-900' : 'bg-slate-50'}`}>
+    <div className={`min-h-screen pt-safe pb-safe flex flex-col items-center justify-center p-4 sm:p-6 transition-colors duration-500 overflow-hidden relative ${darkMode ? 'bg-slate-900' : 'bg-slate-50'}`}>
       
       {/* Background decorations for futuristic feel */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">

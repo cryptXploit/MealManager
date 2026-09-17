@@ -124,7 +124,7 @@ function App() {
 
   if (loading) {
     return (
-      <div className="h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-900 transition-colors duration-500 overflow-hidden relative">
+      <div className="h-screen pt-safe pb-safe flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-900 transition-colors duration-500 overflow-hidden relative">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-indigo-500/20 rounded-full blur-[60px] animate-pulse"></div>
         <div className="relative z-10 flex flex-col items-center">
           <div className="w-16 h-16 relative flex items-center justify-center mb-6">
@@ -141,7 +141,7 @@ function App() {
 
   if (updatePasswordMode) {
     return (
-      <div className="h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900 p-6">
+      <div className="h-screen pt-safe pb-safe flex items-center justify-center bg-slate-50 dark:bg-slate-900 p-6">
         <div className="w-full max-w-md bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-xl border dark:border-slate-700">
           <h2 className="text-xl font-bold mb-6 text-slate-900 dark:text-white">Set New Password</h2>
           <input type="password" id="new_pwd" placeholder="Enter new password" className="w-full p-4 rounded-xl border bg-transparent dark:border-slate-600 dark:text-white mb-4" />

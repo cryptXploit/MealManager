@@ -78,7 +78,7 @@ const CreateMessPage = ({ profile, session, setProfile, setMessDetails, setUiSta
   }
 
   return (
-    <div className={`min-h-screen flex flex-col items-center justify-center p-6 ${darkMode ? 'app-dark' : 'app-light'}`}>
+    <div className={`min-h-screen pt-safe pb-safe flex flex-col items-center justify-center p-6 ${darkMode ? 'app-dark' : 'app-light'}`}>
       <div className={`w-full max-w-md p-8 rounded-2xl shadow-xl border ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-100'}`}>
         <h1 className="text-xl font-bold mb-8 text-center">Create a New Mess</h1>
         
