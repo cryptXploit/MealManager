@@ -24,6 +24,17 @@ const SettingsTab = ({
   const [addMemberEmail, setAddMemberEmail] = useState('');
   const [newPin, setNewPin] = useState('');
   const [confirmModal, setConfirmModal] = useState(null);
+  
+
+  useEffect(() => {
+    if (showSettings && !messDetails?.name && profile?.mess_id) {
+      apiClient.get(`/home/data/${profile.mess_id}`).then(res => {
+        if (res.data?.mess) {
+          setMessDetails(res.data.mess);
+        }
+      }).catch(console.error);
+    }
+  }, [showSettings, messDetails, profile, setMessDetails]);
 
   if (!showSettings) return null;
 
