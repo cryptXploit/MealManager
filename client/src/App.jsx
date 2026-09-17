@@ -178,6 +178,7 @@ function App() {
       profile={profile}
       setProfile={setProfile}
       messDetails={messDetails}
+      setMessDetails={setMessDetails}
       session={session}
     />
   )
