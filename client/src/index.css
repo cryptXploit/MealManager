@@ -55,8 +55,8 @@
   .refresh-spinner { animation: spin 1s linear infinite; }
   @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-  .pt-safe { padding-top: env(safe-area-inset-top); }
-  .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+  .pt-safe { padding-top: max(env(safe-area-inset-top), 36px); }
+  .pb-safe { padding-bottom: max(env(safe-area-inset-bottom), 12px); }
 
   /* Chart styles */
   .chart-container {
