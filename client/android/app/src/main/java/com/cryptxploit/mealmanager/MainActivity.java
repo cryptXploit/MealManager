@@ -1,4 +1,4 @@
-package com.mealmanager.app;
+package com.cryptxploit.mealmanager;
 
 import com.getcapacitor.BridgeActivity;
 

@@ -2,6 +2,6 @@
 <resources>
     <string name="app_name">MealManager</string>
     <string name="title_activity_main">MealManager</string>
-    <string name="package_name">com.mealmanager.app</string>
-    <string name="custom_url_scheme">com.mealmanager.app</string>
+    <string name="package_name">com.cryptxploit.mealmanager</string>
+    <string name="custom_url_scheme">com.cryptxploit.mealmanager</string>
 </resources>

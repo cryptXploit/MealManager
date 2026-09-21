@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace = "com.mealmanager.app"
+    namespace = "com.cryptxploit.mealmanager"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.mealmanager.app"
+        applicationId "com.cryptxploit.mealmanager"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
