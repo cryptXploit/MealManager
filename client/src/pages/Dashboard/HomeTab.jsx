@@ -3,6 +3,10 @@ import html2pdf from 'html2pdf.js';
 import { formatMoney } from '../../utils/helpers';
 import apiClient from '../../services/apiClient';
 
+import { Capacitor } from '@capacitor/core';
+import { Filesystem, Directory } from '@capacitor/filesystem';
+import { Share } from '@capacitor/share';
+
 const AnimatedGreeting = ({ text }) => (
   <div className="font-bold text-sm tracking-wide">
     {text.split('').map((char, index) => (
@@ -102,9 +106,41 @@ const HomeTab = ({
     }
   }, [view, currentDate]);
 
-  const downloadChartPDF = () => {
+  const downloadChartPDF = async () => {
     const el = document.getElementById('chart-container');
-    if (el) html2pdf().from(el).set({ margin: [10,10], filename: 'Meal_Chart.pdf', html2canvas: { scale: 2 }, jsPDF: { orientation: 'landscape' } }).save();
+    if (!el) return;
+
+    if (Capacitor.isNativePlatform()) {
+      try {
+        const pdfBase64 = await html2pdf().from(el).set({
+          margin: [10, 10],
+          filename: 'Meal_Chart.pdf',
+          html2canvas: { scale: 2 },
+          jsPDF: { orientation: 'landscape' }
+        }).outputPdf('datauristring');
+        
+        const base64Data = pdfBase64.split(',')[1];
+        const fileName = `Meal_Chart_${new Date().getTime()}.pdf`;
+        
+        const savedFile = await Filesystem.writeFile({
+          path: fileName,
+          data: base64Data,
+          directory: Directory.Documents,
+        });
+        
+        await Share.share({
+          title: 'Meal Chart PDF',
+          text: 'Here is your meal chart.',
+          url: savedFile.uri,
+          dialogTitle: 'Save or Share PDF'
+        });
+      } catch (err) {
+        console.error("PDF generation failed", err);
+        alert("Failed to save PDF: " + err.message);
+      }
+    } else {
+      html2pdf().from(el).set({ margin: [10,10], filename: 'Meal_Chart.pdf', html2canvas: { scale: 2 }, jsPDF: { orientation: 'landscape' } }).save();
+    }
   };
 
   const handleMonthChange = (e) => {
