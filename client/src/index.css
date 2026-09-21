@@ -55,6 +55,7 @@
   .refresh-spinner { animation: spin 1s linear infinite; }
   @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
+  .mt-safe { margin-top: max(env(safe-area-inset-top), 36px); }
   .pt-safe { padding-top: max(env(safe-area-inset-top), 36px); }
   .pb-safe { padding-bottom: max(env(safe-area-inset-bottom), 12px); }
 

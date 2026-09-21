@@ -275,11 +275,11 @@ const Dashboard = ({ profile, setProfile, messDetails, setMessDetails, session }
   };
 
   return (
-    <div className={`flex flex-col h-[100dvh] w-full pt-safe transition-colors duration-300 overflow-hidden ${darkMode ? 'app-dark bg-slate-900' : 'app-light bg-slate-50'}`}>
+    <div className={`flex flex-col h-[100dvh] w-full transition-colors duration-300 overflow-hidden ${darkMode ? 'app-dark bg-slate-900' : 'app-light bg-slate-50'}`}>
       
       {/* Notifications */}
       {notification && (
-        <div className={`fixed top-2 left-2 right-2 z-50 flex justify-center ${isNotifExiting ? 'exiting' : ''} notch-notification`}>
+        <div className={`fixed top-2 left-2 right-2 z-50 flex justify-center mt-safe ${isNotifExiting ? 'exiting' : ''} notch-notification`}>
           <div onClick={() => { setActiveTab('chat'); setNotification(null); }} className={`flex items-center gap-3 p-3 pr-4 rounded-[2rem] shadow-2xl border cursor-pointer backdrop-blur-xl transition-all active:scale-95 ${darkMode ? 'bg-slate-900/90 border-slate-700 text-white' : 'bg-white/95 border-slate-200 text-slate-800'} max-w-[95%] w-auto min-w-[300px]`}>
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shrink-0 shadow-lg text-white"><i className="fa-solid fa-bowl-food text-lg"></i></div>
             <div className="flex-1 min-w-0">
